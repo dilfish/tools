@@ -84,6 +84,6 @@ COMMIT
 :OUTPUT ACCEPT [985:75806]
 :POSTROUTING ACCEPT [431:36566]
 ## ipsec's source nat
--A POSTROUTING -s 10.31.2.0/24 -o ens3 -j SNAT --to-source 45.32.75.97
+-A POSTROUTING -s 10.31.2.0/24 -o ens3 -j SNAT --to-source 119.28.76.79
 COMMIT
 # Completed on Wed Feb 15 18:17:53 2017
