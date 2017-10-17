@@ -418,8 +418,10 @@ reply_to_icmp_echo_rqsts(uint8_t port)
 			printf("udp hdr src %u, dst %u, len %u, cksum %u\n", rte_be_to_cpu_16(u_hdr->src_port), rte_be_to_cpu_16(u_hdr->dst_port), u_hdr->dgram_len, u_hdr->dgram_cksum);
 			char *msg = (char*)u_hdr + sizeof(struct udp_hdr);
 			printf("msg header is %c, %c, %c\n", msg[0], msg[1], msg[2]);
+			ether_addr_copy(&eth_h->d_addr, &addr);
 			ether_addr_copy(&eth_h->s_addr, &eth_h->d_addr);  
-            		ether_addr_copy(&addr, &eth_h->s_addr);  
+           	ether_addr_copy(&addr, &eth_h->s_addr);  
+			// same addr, no need to recaculate check sum
 			ip_h->src_addr = dst;
 			ip_h->dst_addr = src;
 			uint16_t dst_port;
