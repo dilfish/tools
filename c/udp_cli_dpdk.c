@@ -28,8 +28,11 @@
 struct rte_mempool *glb_mp = NULL;
 struct ether_addr eth_src_addr;
 struct ether_addr eth_rt_addr;
+// local addr 10.0.2.6
 uint32_t ip_src_addr = 0xa000206;
+// route addr 10.0.2.1
 uint32_t ip_dst_addr = 0xa000201;
+// libsm.com addr 119.28.76.79
 uint32_t ip_libsm_addr = 0x771c4c4f;
 
 
@@ -147,9 +150,9 @@ send_udp(void) {
 	ether_addr_copy(&eth_src_addr, &eth->s_addr);
 	eth->ether_type = htons(ETHER_TYPE_IPv4);
 	ip_h = (struct ipv4_hdr*)&eth[1];
+	ip_h->hdr_checksum = 0;
 	ip_h->src_addr = htonl(ip_src_addr);
 	ip_h->dst_addr = htonl(ip_libsm_addr);
-	ip_h->hdr_checksum = ipv4_hdr_cksum(ip_h);
 	ip_h->version_ihl = 69;
 	ip_h->type_of_service = 0;
 	// 36 == abcdefg\0
@@ -160,11 +163,12 @@ send_udp(void) {
 	// flag set, no frag
 	ip_h->fragment_offset = 64;
 	ip_h->next_proto_id = 17;
+	ip_h->hdr_checksum = ipv4_hdr_cksum(ip_h);
 	u_hdr = (struct udp_hdr*)&ip_h[1];
 	u_hdr->src_port = htons(9999);
 	u_hdr->dst_port = htons(9999);
 	u_hdr->dgram_cksum = 0;
-	u_hdr->dgram_len = htons(8);
+	u_hdr->dgram_len = htons(8 + sizeof(struct udp_hdr));
 	char *msg = (char*)u_hdr + sizeof(struct udp_hdr);
 	for (i = 0;i < 7;i ++) {
 		msg[i] = 'a' + i;
@@ -172,7 +176,6 @@ send_udp(void) {
 	msg[7] = '\n';
 	uint32_t sz = sizeof(struct ether_hdr) + sizeof(struct ipv4_hdr) + sizeof(struct udp_hdr);
 	sz = sz + 8;
-	sz = sz + 10;
 	m->pkt_len = sz;
 	m->data_len = sz;
 	ret = rte_eth_tx_burst(0, 0, &m, 1);
@@ -199,12 +202,13 @@ recv_udp_response(struct rte_mbuf **mbufs, uint16_t nb_rx) {
 			continue;
 		}
 		ip_h = (struct ipv4_hdr*)((char*)eth_h + l2_len);
-		if (ip_h->dst_addr != ip_src_addr) {
-			continue;
-		}
 		if (ip_h->next_proto_id != 17) {
 			continue;
 		}
+		if (ip_h->dst_addr != htonl(ip_src_addr)) {
+			continue;
+		}
+		printf("ipaddr is src 0x%x, dst 0x%x\n", ip_h->src_addr, ip_h->dst_addr);
 		struct udp_hdr *u_hdr;
 		u_hdr = (struct udp_hdr*)((rte_pktmbuf_mtod(m, char*) + l2_len + sizeof(struct ipv4_hdr)));
 		char *msg = (char*)u_hdr + sizeof(struct udp_hdr);
@@ -242,6 +246,11 @@ timer0_cb(__attribute__((unused)) struct rte_timer *tim,
 	for (i = 0;i < nb_rx;i ++) {
 		struct ether_hdr *eth_hdr = rte_pktmbuf_mtod(pkts_burst[i], struct ether_hdr*);
 		printf("eth type is %u\n", htons(eth_hdr->ether_type));
+		if (htons(eth_hdr->ether_type) == 2048) {
+			struct ipv4_hdr *ip_h = (struct ipv4_hdr*)&eth_hdr[1];
+			printf("ipv4 next type %u\n", ip_h->next_proto_id);
+			printf("ipv4 src dst 0x%x, 0x%x\n", ip_h->src_addr, ip_h->dst_addr);
+		}
 	}
 	if (status == 0) {
 		send_arp_request();
