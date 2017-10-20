@@ -1,5 +1,6 @@
-// copied from https://github.com/Mellanox/dpdk-mlx4/blob/master/app/test-pmd/icmpecho.c
-// and contiuanlly modifying
+// answer arp request
+// send udp data back
+// original from https://github.com/Mellanox/dpdk-mlx4/blob/master/app/test-pmd/icmpecho.c
 // sean at shanghai
 #include <stdarg.h>  
 #include <string.h>  

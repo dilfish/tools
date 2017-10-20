@@ -3,6 +3,10 @@
 // sean at shanghai
 // steal from kni
 
+// handle udp port 53
+// send others to kni
+
+
 /*-
  *   BSD LICENSE
  *

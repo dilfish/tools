@@ -1,3 +1,6 @@
+// send dns request at backend
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
