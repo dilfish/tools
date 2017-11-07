@@ -1,13 +1,6 @@
 #ifndef HEADER_H
 #define HEADER_H
 
-// virtual box test for lib dpdk
-// virtual box has two network mode:
-// 1. bridge: host could send and recv with guest
-// 2. nat: guest could send and recv with remote
-// so we use two cpus and two ports combined
-
-
 // standard c library
 #include <stdarg.h>  
 #include <string.h>  
