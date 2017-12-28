@@ -3,6 +3,7 @@ package tools
 import (
 	"fmt"
 	"gopkg.in/mailgun/mailgun-go.v1"
+	"errors"
 )
 
 var ApiKey = ""
@@ -14,6 +15,9 @@ func InitMail(api, pub string) {
 }
 
 func SendMail(to, title, content string) error {
+	if ApiKey == "" || PubKey == "" {
+		return errors.New("You need to call InitMail first")
+	}
 	from := "mc@mg.libsm.com"
 	domain := "mg.libsm.com"
 	mg := mailgun.NewMailgun(domain, ApiKey, PubKey)
