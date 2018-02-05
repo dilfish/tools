@@ -6,6 +6,10 @@
 # put this script under /usr/bin
 # usage: swapssh dns
 
+if [ $# != 1 ] ; then 
+	echo "You should specify the file extension for github program name"
+	exit 1; 
+fi
 
 DEFAULT_BAK="__"
 if [ "$1" = "$DEFAULT_BAK" ] ; then
@@ -13,12 +17,7 @@ if [ "$1" = "$DEFAULT_BAK" ] ; then
 	exit 1
 fi
 
-
-if [ $# != 1 ] ; then 
-	echo "You should specify the file extension for github program name"
-	exit 1; 
-fi 
-cd /root/.ssh
+cd ~/.ssh
 
 TARGET=id_rsa.$1
 PUB_TARGET=id_rsa.pub.$1
@@ -33,7 +32,7 @@ if [ ! -f $PUB_TARGET ] ; then
 	exit 1
 fi
 
-
+# overwrite backup files
 cp -f id_rsa id_rsa.__
 cp -f id_rsa.pub id_rsa.pub.__
 
