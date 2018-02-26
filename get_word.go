@@ -1,4 +1,4 @@
-package main
+package tools
 
 import (
 	"bufio"
@@ -68,7 +68,7 @@ func DetailWord(word, k string) (string, error) {
 	return string(bt), nil
 }
 
-var Kyes = []string{ /* copied from github */ }
+var Keys = []string{ /* copied from github */ }
 
 func WriteInfo(i, j int, name, ct string) error {
 	fn := strconv.Itoa(i) + "/" + strconv.Itoa(j) + "/" + name + ".txt"
@@ -127,9 +127,4 @@ func Loop() error {
 			}
 		}
 	}
-}
-
-func main() {
-	panic(Loop())
-	return
 }

@@ -11,6 +11,7 @@ if [ $# != 1 ] ; then
 	exit 1; 
 fi
 
+# backup files in case wrong oprations
 DEFAULT_BAK="__"
 if [ "$1" = "$DEFAULT_BAK" ] ; then
 	echo "You can not specify a file name same as default backup's name"
