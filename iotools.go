@@ -7,7 +7,25 @@ import (
 	"os"
 	"io"
 	"bufio"
+	"math/rand"
+	"time"
+	"net"
+	"fmt"
 )
+
+
+
+func RandStr(w int) string {
+	rand.Seed(time.Now().UnixNano())
+	base := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+	str := ""
+	for i := 0;i < w;i ++ {
+		idx := rand.Int31n(int32(len(base)))
+		str = str + string(base[idx])
+	}
+	return str
+}
+
 
 func ReadFile(fn string) ([]byte, error) {
 	file, err := os.Open(fn)
@@ -65,4 +83,40 @@ func ReadLine(fn string, lf LineFunc) error {
 		}
 	}
 	return nil
+}
+
+
+func Proxy(c *net.TCPConn) {
+	defer c.Close()
+	now := time.Now()
+	fmt.Println(now, "we get an conn from", c.RemoteAddr())
+	fmt.Println(now, "and we are going to 119.28.77.61:8000...")
+	var raddr net.TCPAddr
+	raddr.IP = net.ParseIP("119.28.77.61")
+	raddr.Port = 8000
+	r, err := net.DialTCP("tcp4", nil, &raddr)
+	if err != nil {
+		fmt.Println("dial remote", err)
+		return
+	}
+	go io.Copy(c, r)
+	io.Copy(r, c)
+}
+
+
+func Run() error {
+	var addr net.TCPAddr
+	addr.Port = 8080
+	ls, err := net.ListenTCP("tcp4", &addr)
+	if err != nil {
+		return err
+	}
+	for {
+		c, err := ls.AcceptTCP()
+		if err != nil {
+			fmt.Println("accept error", err)
+			continue
+		}
+		go Proxy(c)
+	}
 }
