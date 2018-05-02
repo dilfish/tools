@@ -1,31 +1,33 @@
 package tools
 
 import (
+	"bufio"
+	"fmt"
+	"io"
 	"io/ioutil"
+	"math/rand"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
-	"io"
-	"bufio"
-	"math/rand"
 	"time"
-	"net"
-	"fmt"
 )
 
-
+func RandInt(w int) int32 {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Int31n(int32(w))
+}
 
 func RandStr(w int) string {
 	rand.Seed(time.Now().UnixNano())
 	base := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 	str := ""
-	for i := 0;i < w;i ++ {
+	for i := 0; i < w; i++ {
 		idx := rand.Int31n(int32(len(base)))
 		str = str + string(base[idx])
 	}
 	return str
 }
-
 
 func ReadFile(fn string) ([]byte, error) {
 	file, err := os.Open(fn)
@@ -54,9 +56,7 @@ func DoGet(url string) ([]byte, error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
-
-type LineFunc func (line string) error
-
+type LineFunc func(line string) error
 
 func ReadLine(fn string, lf LineFunc) error {
 	file, err := os.Open(fn)
@@ -76,7 +76,7 @@ func ReadLine(fn string, lf LineFunc) error {
 		if line == "" {
 			continue
 		}
-		line = line[:len(line) - 1]
+		line = line[:len(line)-1]
 		err = lf(line)
 		if err != nil {
 			return err
@@ -84,7 +84,6 @@ func ReadLine(fn string, lf LineFunc) error {
 	}
 	return nil
 }
-
 
 func Proxy(c *net.TCPConn) {
 	defer c.Close()
@@ -102,7 +101,6 @@ func Proxy(c *net.TCPConn) {
 	go io.Copy(c, r)
 	io.Copy(r, c)
 }
-
 
 func Run() error {
 	var addr net.TCPAddr
