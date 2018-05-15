@@ -11,7 +11,13 @@ import (
 	"time"
 	"net"
 	"fmt"
+	"errors"
 )
+
+
+var ErrBadFmt = errors.New("bad format")
+var ErrNoSuch = errors.New("no such")
+var ErrDupData = errors.New("dup data")
 
 
 
