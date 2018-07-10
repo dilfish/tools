@@ -66,5 +66,8 @@ func InitLog(fn, prefix string) *log.Logger {
 	if err != nil {
 		return nil
 	}
+	if prefix == "" || prefix[len(prefix) - 1] != " " {
+	    prefix = prefix + " "
+	}
 	return log.New(as, prefix, log.LstdFlags)
 }
