@@ -61,6 +61,10 @@ func (as *AppendStruct) Write(bt []byte) (int, error) {
 	return n, err
 }
 
-func init() {
-	log.SetPrefix("AppendLogger: ")
+func InitLog(fn, prefix string) *log.Logger {
+	as, err := NewAppender(fn)
+	if err != nil {
+		return nil
+	}
+	return log.New(as, prefix, log.LstdFlags)
 }
