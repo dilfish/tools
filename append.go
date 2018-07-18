@@ -68,3 +68,10 @@ func InitLog(fn, prefix string) *log.Logger {
 	}
 	return log.New(as, prefix, log.LstdFlags)
 }
+
+func SetLog(prefix string) {
+	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Llongfile)
+	if prefix != "" {
+		log.SetPrefix(prefix)
+	}
+}
