@@ -2,6 +2,7 @@ package tools
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -11,14 +12,11 @@ import (
 	"net/url"
 	"os"
 	"time"
-	"errors"
 )
-
 
 var ErrBadFmt = errors.New("bad format")
 var ErrNoSuch = errors.New("no such")
 var ErrDupData = errors.New("dup data")
-
 
 func RandInt(w int) int32 {
 	rand.Seed(time.Now().UnixNano())
@@ -64,6 +62,32 @@ func DoGet(url string) ([]byte, error) {
 }
 
 type LineFunc func(line string) error
+
+func GetAsLine(uri string, lf LineFunc) error {
+	bt, err := DoGet(uri)
+	if err != nil {
+		return err
+	}
+	buf := bytes.NewBuffer(bt)
+	for {
+		line, err := buf.ReadString('\n')
+		if err != nil && err != io.EOF {
+			return err
+		}
+		if err == io.EOF {
+			break
+		}
+		if line == "" {
+			continue
+		}
+		line = line[:len(line)-1]
+		err = lf(line)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func ReadLine(fn string, lf LineFunc) error {
 	file, err := os.Open(fn)
