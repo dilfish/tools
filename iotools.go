@@ -3,6 +3,7 @@ package tools
 import (
 	"bufio"
 	"bytes"
+	"crypto/md5"
 	"errors"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
@@ -193,4 +194,17 @@ func StartFan() {
 		go fan(ch)
 	}
 	<-ch
+}
+
+func FileMd5(fn string) (string, error) {
+	file, err := os.Open(fn)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+	bt, err := ioutil.ReadAll(file)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%x", md5.Sum(bt)), nil
 }
