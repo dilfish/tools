@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"io"
 	"io/ioutil"
 	"math/rand"
@@ -12,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -90,7 +92,15 @@ func GetAsLine(uri string, lf LineFunc) error {
 	return nil
 }
 
+func ReadLineArr(fn string, lf LineFunc, split int) error {
+	return readLine(fn, lf, split)
+}
+
 func ReadLine(fn string, lf LineFunc) error {
+	return readLine(fn, lf, 0)
+}
+
+func readLine(fn string, lf LineFunc, split int) error {
 	file, err := os.Open(fn)
 	if err != nil {
 		return err
@@ -109,6 +119,12 @@ func ReadLine(fn string, lf LineFunc) error {
 			continue
 		}
 		line = line[:len(line)-1]
+		if split != 0 {
+			arr := strings.Split(line, " ")
+			if len(arr) != split {
+				return ErrBadFmt
+			}
+		}
 		err = lf(line)
 		if err != nil {
 			return err
@@ -149,4 +165,32 @@ func Run() error {
 		}
 		go Proxy(c)
 	}
+}
+
+func BCrypt(pass string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
+}
+
+func BDecrypt(hash []byte, pass string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(pass))
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+// a joke
+func fan(ch chan int) {
+	i := uint64(1)
+	for {
+		i = i + 1
+	}
+}
+
+func StartFan() {
+	ch := make(chan int)
+	for i := 0; i < 8; i++ {
+		go fan(ch)
+	}
+	<-ch
 }

@@ -1,8 +1,43 @@
 package tools
 
 import (
+	"github.com/miekg/dns"
 	"net"
+	"net/http"
+	"os"
 )
+
+func PostImage(u, fn string) error {
+	file, err := os.Open(fn)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	_, err = http.Post(u, "image/jpeg", file)
+	return err
+}
+
+func DIG(domain, remote, client_ip string) ([]dns.RR, error) {
+	m := new(dns.Msg)
+	m.SetQuestion(domain, dns.TypeA)
+	o := new(dns.OPT)
+	o.Hdr.Name = "."
+	o.Hdr.Rrtype = dns.TypeOPT
+	e := new(dns.EDNS0_SUBNET)
+	e.Code = dns.EDNS0SUBNET
+	e.Family = 1
+	e.SourceNetmask = 32
+	e.SourceScope = 0
+	e.Address = net.ParseIP(client_ip).To4()
+	o.Option = append(o.Option, e)
+	m.Extra = append(m.Extra, o)
+	c := new(dns.Client)
+	r, _, err := c.Exchange(m, remote+":53")
+	if err != nil {
+		return nil, err
+	}
+	return r.Answer, nil
+}
 
 func IP2Num(ipstr string) uint32 {
 	ip := net.ParseIP(ipstr)
