@@ -196,15 +196,15 @@ func StartFan() {
 	<-ch
 }
 
-func FileMd5(fn string) (string, error) {
+func FileMd5(fn string) (int, string, error) {
 	file, err := os.Open(fn)
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
 	defer file.Close()
 	bt, err := ioutil.ReadAll(file)
 	if err != nil {
-		return "", err
+		return 0, "", err
 	}
-	return fmt.Sprintf("%x", md5.Sum(bt)), nil
+	return len(bt), fmt.Sprintf("%x", md5.Sum(bt)), nil
 }
