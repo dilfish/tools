@@ -208,3 +208,12 @@ func FileMd5(fn string) (int, string, error) {
 	}
 	return len(bt), fmt.Sprintf("%x", md5.Sum(bt)), nil
 }
+
+func TimeStr() string {
+	return time.Now().Format("2006-01-02 15:04:05")
+}
+
+func FormatTime(sec int64) string {
+	t := time.Unix(sec, 0)
+	return t.Local().Format("2006-01-02 15:04:05")
+}
