@@ -35,10 +35,14 @@ func (as *AppendStruct) wait() {
 
 func NewAppender(fn string) (*AppendStruct, error) {
 	var as AppendStruct
+	os.Stdin.Close()
+	os.Stdout.Close()
 	f, err := openFile(fn)
 	if err != nil {
 		return nil, err
 	}
+	os.Stdin.Close()
+	os.Stdout.Close()
 	as.file = f
 	as.fn = fn
 	as.c = make(chan os.Signal)
