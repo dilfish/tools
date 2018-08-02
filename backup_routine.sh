@@ -19,6 +19,7 @@ function filedir_backup() {
 	/bin/cp -av ${2}/${1} .
 	/bin/tar cvf ${1}.tar ${1}
 	/bin/gzip ${1}.tar
+	/bin/rm ${1}
 	./simple_cryptor ${pass} ${1}.tar.gz
 	/bin/mv ${1}.tar.gz orig
 	/bin/mv ${1}.tar.gz.se data
@@ -31,4 +32,9 @@ mysql_backup mc
 mysql_backup dilfish
 
 
-fildir_backup jj /disk1/cao
+filedir_backup jj /disk1/cao
+filedir_backup letsencrypt /etc
+filedir_backup conf /usr/local/nginx
+
+
+/usr/bin/git push
