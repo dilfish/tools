@@ -209,6 +209,15 @@ func FileMd5(fn string) (int, string, error) {
 	return len(bt), fmt.Sprintf("%x", md5.Sum(bt)), nil
 }
 
+func UnixToBJ(unix int64) time.Time {
+	l, err := time.LoadLocation("Asia/Shanghai")
+	if err != nil {
+		panic("bad time name : Asia/Shanghai")
+	}
+	t := time.Unix(unix, 0)
+	return t.In(l)
+}
+
 func TimeStr() string {
 	return time.Now().Format("2006-01-02 15:04:05")
 }
