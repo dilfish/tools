@@ -210,9 +210,21 @@ func FileMd5(fn string) (int, string, error) {
 }
 
 func UnixToBJ(unix int64) time.Time {
-	l, err := time.LoadLocation("Asia/Shanghai")
+	return unixTo(unix, "Asia/Shanghai")
+}
+
+func UnixToUSPacific(unix int64) time.Time {
+	return unixTo(unix, "US/Pacific")
+}
+
+func UnixToUTC(unix int64) time.Time {
+	return unixTo(unix, "UTC")
+}
+
+func unixTo(unix int64, name string) time.Time {
+	l, err := time.LoadLocation(name)
 	if err != nil {
-		panic("bad time name : Asia/Shanghai")
+		panic("bad time name : " + name)
 	}
 	t := time.Unix(unix, 0)
 	return t.In(l)
