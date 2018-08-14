@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -190,7 +191,11 @@ func fan(ch chan int) {
 
 func StartFan() {
 	ch := make(chan int)
-	for i := 0; i < 8; i++ {
+	ncpu := runtime.NumCPU()
+	if runtime.GOMAXPROCS(ncpu) < 0 {
+		panic("could not set maxprocs")
+	}
+	for i := 0; i < ncpu; i++ {
 		go fan(ch)
 	}
 	<-ch
