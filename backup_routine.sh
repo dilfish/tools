@@ -35,6 +35,7 @@ mysql_backup dilfish
 filedir_backup jj /disk1/cao
 filedir_backup letsencrypt /etc
 filedir_backup conf /usr/local/nginx
+filedir_backup diah /disk1/diah
 
 
 /usr/bin/git push
