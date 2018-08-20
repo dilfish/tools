@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 )
@@ -190,7 +191,11 @@ func fan(ch chan int) {
 
 func StartFan() {
 	ch := make(chan int)
-	for i := 0; i < 8; i++ {
+	ncpu := runtime.NumCPU()
+	if runtime.GOMAXPROCS(ncpu) < 0 {
+		panic("could not set maxprocs")
+	}
+	for i := 0; i < ncpu; i++ {
 		go fan(ch)
 	}
 	<-ch
@@ -210,9 +215,21 @@ func FileMd5(fn string) (int, string, error) {
 }
 
 func UnixToBJ(unix int64) time.Time {
-	l, err := time.LoadLocation("Asia/Shanghai")
+	return unixTo(unix, "Asia/Shanghai")
+}
+
+func UnixToUSPacific(unix int64) time.Time {
+	return unixTo(unix, "US/Pacific")
+}
+
+func UnixToUTC(unix int64) time.Time {
+	return unixTo(unix, "UTC")
+}
+
+func unixTo(unix int64, name string) time.Time {
+	l, err := time.LoadLocation(name)
 	if err != nil {
-		panic("bad time name : Asia/Shanghai")
+		panic("bad time name : " + name)
 	}
 	t := time.Unix(unix, 0)
 	return t.In(l)
