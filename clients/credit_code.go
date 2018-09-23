@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/dilfish/tools"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -91,7 +92,7 @@ func readFile(line string) error {
 }
 
 func ReadInput() error {
-	return ReadLine("./list.txt", readFile)
+	return tools.ReadLine("./list.txt", readFile)
 }
 
 func GetCreditCode() {
