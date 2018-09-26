@@ -35,14 +35,10 @@ func (as *AppendStruct) wait() {
 
 func NewAppender(fn string) (*AppendStruct, error) {
 	var as AppendStruct
-	os.Stdin.Close()
-	os.Stdout.Close()
 	f, err := openFile(fn)
 	if err != nil {
 		return nil, err
 	}
-	os.Stdin.Close()
-	os.Stdout.Close()
 	as.file = f
 	as.fn = fn
 	as.c = make(chan os.Signal)
@@ -65,12 +61,20 @@ func (as *AppendStruct) Write(bt []byte) (int, error) {
 	return n, err
 }
 
+func Daemon() {
+	os.Stdout.Close()
+	os.Stdin.Close()
+}
+
 func InitLog(fn, prefix string) *log.Logger {
 	as, err := NewAppender(fn)
 	if err != nil {
 		return nil
 	}
-	if prefix == "" || prefix[len(prefix)-1] != ' ' {
+	if prefix == "" {
+		prefix = "DefAppendLogger "
+	}
+	if prefix[len(prefix)-1] != ' ' {
 		prefix = prefix + " "
 	}
 	return log.New(as, prefix, log.LstdFlags)
