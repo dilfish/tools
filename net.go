@@ -3,19 +3,7 @@ package tools
 import (
 	"github.com/miekg/dns"
 	"net"
-	"net/http"
-	"os"
 )
-
-func PostImage(u, fn string) error {
-	file, err := os.Open(fn)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	_, err = http.Post(u, "image/jpeg", file)
-	return err
-}
 
 func DIG(domain, remote, client_ip string) ([]dns.RR, error) {
 	m := new(dns.Msg)
