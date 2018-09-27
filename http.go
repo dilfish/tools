@@ -48,8 +48,12 @@ func (l *LogMux) Handle(pattern string, handler func(http.ResponseWriter, *http.
 }
 
 func (l *LogMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h, p := l.mux.Handler(r)
+	h, _ := l.mux.Handler(r)
 	l.lw.w = w
 	h.ServeHTTP(l.lw, r)
-	l.logger.Println(r.RequestURI, p, string(l.lw.ct))
+	if len(l.lw.ct) < 100 {
+		l.logger.Println(r.URL.Path+r.URL.RawQuery, string(l.lw.ct))
+	} else {
+		l.logger.Println(r.URL.Path+r.URL.RawQuery, string(l.lw.ct[:100]))
+	}
 }
