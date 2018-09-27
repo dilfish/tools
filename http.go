@@ -1,7 +1,7 @@
 package tools
 
 import (
-	"io"
+	"log"
 	"net/http"
 )
 
@@ -14,14 +14,14 @@ type LogResponseWriter struct {
 type LogMux struct {
 	mux    *http.ServeMux
 	lw     *LogResponseWriter
-	logger io.Writer
+	logger *log.Logger
 }
 
-func NewLogMux(logger io.Writer) *LogMux {
+func NewLogMux(fn, prefix string) *LogMux {
 	lm := &LogMux{}
 	lm.mux = http.NewServeMux()
 	lm.lw = &LogResponseWriter{}
-	lm.logger = logger
+	lm.logger = InitLog(fn, prefix)
 	return lm
 }
 
@@ -51,5 +51,5 @@ func (l *LogMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h, p := l.mux.Handler(r)
 	l.lw.w = w
 	h.ServeHTTP(l.lw, r)
-	io.WriteString(l.logger, r.RequestURI+" "+p+" "+string(l.lw.ct))
+	l.logger.Println(r.RequestURI, p, string(l.lw.ct))
 }

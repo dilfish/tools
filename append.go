@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -22,7 +23,7 @@ func (as *AppendStruct) wait() {
 	signal.Notify(as.c, syscall.SIGUSR1)
 	for {
 		<-as.c
-		log.Println("we got an signal, restart.")
+		io.WriteString(os.Stderr, "we got an signal, restart at "+TimeStr())
 		f, err := openFile(as.fn)
 		if err != nil {
 			as.err = err
@@ -77,12 +78,5 @@ func InitLog(fn, prefix string) *log.Logger {
 	if prefix[len(prefix)-1] != ' ' {
 		prefix = prefix + " "
 	}
-	return log.New(as, prefix, log.LstdFlags)
-}
-
-func SetLog(prefix string) {
-	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Llongfile)
-	if prefix != "" {
-		log.SetPrefix(prefix)
-	}
+	return log.New(as, prefix, log.LstdFlags|Lshortfile)
 }
