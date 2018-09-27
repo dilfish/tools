@@ -1,13 +1,9 @@
 package tools
 
 import (
-	"context"
 	"database/sql"
-	"errors"
-	"github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 	"strconv"
-	"strings"
-	"time"
 )
 
 type DBConfig struct {
