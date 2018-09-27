@@ -78,5 +78,5 @@ func InitLog(fn, prefix string) *log.Logger {
 	if prefix[len(prefix)-1] != ' ' {
 		prefix = prefix + " "
 	}
-	return log.New(as, prefix, log.LstdFlags|Lshortfile)
+	return log.New(as, prefix, log.LstdFlags|log.Lshortfile)
 }

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"crypto/md5"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
@@ -22,6 +23,14 @@ import (
 var ErrBadFmt = errors.New("bad format")
 var ErrNoSuch = errors.New("no such")
 var ErrDupData = errors.New("dup data")
+
+func ReadConfig(fn string, conf interface{}) error {
+	bt, err := ReadFile(fn)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(bt, conf)
+}
 
 func RandInt(w int) int32 {
 	rand.Seed(time.Now().UnixNano())
