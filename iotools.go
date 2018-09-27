@@ -7,15 +7,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"golang.org/x/crypto/bcrypt"
 	"io"
 	"io/ioutil"
 	"math/rand"
-	"net"
 	"net/http"
 	"net/url"
 	"os"
-	"runtime"
 	"strings"
 	"time"
 )
@@ -142,72 +139,6 @@ func readLine(fn string, lf LineFunc, split int) error {
 		}
 	}
 	return nil
-}
-
-func Proxy(c *net.TCPConn) {
-	defer c.Close()
-	now := time.Now()
-	fmt.Println(now, "we get an conn from", c.RemoteAddr())
-	fmt.Println(now, "and we are going to 119.28.77.61:8000...")
-	var raddr net.TCPAddr
-	raddr.IP = net.ParseIP("119.28.77.61")
-	raddr.Port = 8000
-	r, err := net.DialTCP("tcp4", nil, &raddr)
-	if err != nil {
-		fmt.Println("dial remote", err)
-		return
-	}
-	go io.Copy(c, r)
-	io.Copy(r, c)
-}
-
-func Run() error {
-	var addr net.TCPAddr
-	addr.Port = 8080
-	ls, err := net.ListenTCP("tcp4", &addr)
-	if err != nil {
-		return err
-	}
-	for {
-		c, err := ls.AcceptTCP()
-		if err != nil {
-			fmt.Println("accept error", err)
-			continue
-		}
-		go Proxy(c)
-	}
-}
-
-func BCrypt(pass string) ([]byte, error) {
-	return bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
-}
-
-func BDecrypt(hash []byte, pass string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(pass))
-	if err != nil {
-		return false
-	}
-	return true
-}
-
-// a joke
-func fan(ch chan int) {
-	i := uint64(1)
-	for {
-		i = i + 1
-	}
-}
-
-func StartFan() {
-	ch := make(chan int)
-	ncpu := runtime.NumCPU()
-	if runtime.GOMAXPROCS(ncpu) < 0 {
-		panic("could not set maxprocs")
-	}
-	for i := 0; i < ncpu; i++ {
-		go fan(ch)
-	}
-	<-ch
 }
 
 func FileMd5(fn string) (int, string, error) {

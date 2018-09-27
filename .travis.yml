@@ -12,3 +12,9 @@ after_success:
 
 script:
   - go test -race -coverprofile=coverage.txt -covermode=atomic
+
+services:
+  - mysql
+
+before_install:
+  - mysql -e 'CREATE DATABASE test;'

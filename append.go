@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 type AppendStruct struct {
@@ -31,11 +32,13 @@ func (as *AppendStruct) wait() {
 			if err != nil {
 				as.err = err
 				log.Println("open file:", err)
+				time.Sleep(time.Second)
 				continue
 			}
 			as.file = f
 		case <-as.cClose:
-			break
+			signal.Reset(syscall.SIGUSR1)
+			return
 		}
 	}
 }
@@ -56,7 +59,9 @@ func NewAppender(fn string) (*AppendStruct, error) {
 
 func (as *AppendStruct) Close() {
 	as.cClose <- true
+	as.file.Close()
 	close(as.c)
+	close(as.cClose)
 }
 
 func (as *AppendStruct) Write(bt []byte) (int, error) {
@@ -73,6 +78,8 @@ func (as *AppendStruct) Write(bt []byte) (int, error) {
 func Daemon() {
 	os.Stdout.Close()
 	os.Stdin.Close()
+	os.Stdout = nil
+	os.Stdin = nil
 }
 
 func InitLog(fn, prefix string) *log.Logger {
