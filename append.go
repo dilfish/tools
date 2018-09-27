@@ -9,10 +9,11 @@ import (
 )
 
 type AppendStruct struct {
-	file *os.File
-	c    chan os.Signal
-	fn   string
-	err  error
+	file   *os.File
+	c      chan os.Signal
+	cClose chan bool
+	fn     string
+	err    error
 }
 
 func openFile(fn string) (*os.File, error) {
@@ -22,15 +23,20 @@ func openFile(fn string) (*os.File, error) {
 func (as *AppendStruct) wait() {
 	signal.Notify(as.c, syscall.SIGUSR1)
 	for {
-		<-as.c
-		io.WriteString(os.Stderr, "we got an signal, restart at "+TimeStr())
-		f, err := openFile(as.fn)
-		if err != nil {
-			as.err = err
-			log.Println("open file:", err)
-			continue
+		select {
+		case <-as.c:
+			<-as.c
+			io.WriteString(os.Stderr, "we got an signal, restart at "+TimeStr())
+			f, err := openFile(as.fn)
+			if err != nil {
+				as.err = err
+				log.Println("open file:", err)
+				continue
+			}
+			as.file = f
+		case <-as.cClose:
+			break
 		}
-		as.file = f
 	}
 }
 
@@ -43,11 +49,13 @@ func NewAppender(fn string) (*AppendStruct, error) {
 	as.file = f
 	as.fn = fn
 	as.c = make(chan os.Signal)
+	as.cClose = make(chan bool)
 	go as.wait()
 	return &as, nil
 }
 
 func (as *AppendStruct) Close() {
+	as.cClose <- true
 	close(as.c)
 }
 
