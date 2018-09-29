@@ -6,7 +6,7 @@ import (
 )
 
 func TestNewAppender(t *testing.T) {
-	as, err := NewAppender("./test.log")
+	as, err := NewAppender("testdata/appender.log")
 	if err != nil {
 		t.Error("expect nil, got", err)
 	}
@@ -21,18 +21,18 @@ func TestNewAppender(t *testing.T) {
 			t.Error("expect not nil, got", err)
 		}
 	}
-	_, err = NewAppender("testdata/a/test.log")
+	_, err = NewAppender("testdata/a/appender.log")
 	if err == nil {
 		t.Error("expect err, got", err)
 	}
 }
 
 func TestInitLog(t *testing.T) {
-	logger := InitLog("./test.log", "test_")
+	logger := InitLog("testdata/log.log", "test_")
 	if logger == nil {
 		t.Error("logger is nil")
 	}
-	logger = InitLog("./test.log", "")
+	logger = InitLog("testdata/log.log", "")
 	if logger == nil {
 		t.Error("logger is nil 2")
 	}

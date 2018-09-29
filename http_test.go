@@ -1,27 +1,29 @@
 package tools
 
 import (
+	"fmt"
 	"github.com/appleboy/gofight"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"testing"
 )
 
-type Case struct {
+type Http struct {
 	t *testing.T
 }
 
-func (c *Case) Hello(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
-	assert.Equal(c.t, "hello", r.Body.String())
-	assert.Equal(c.t, http.StatusOK, r.Code)
+func (h *Http) Hello(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
+	fmt.Println("hello")
+	assert.Equal(h.t, "hello", r.Body.String())
+	assert.Equal(h.t, http.StatusOK, r.Code)
 }
 
-func (c *Case) Status(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
-	assert.Equal(c.t, 404, r.Code)
+func (h *Http) Status(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
+	assert.Equal(h.t, 404, r.Code)
 }
 
-func (c *Case) Header(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
-	assert.Equal(c.t, "test-header", rq.Header.Get("X-Header-Test"))
+func (h *Http) Header(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
+	assert.Equal(h.t, "test-header", rq.Header.Get("X-Header-Test"))
 }
 
 func TestNewLogMux(t *testing.T) {
@@ -36,9 +38,9 @@ func TestNewLogMux(t *testing.T) {
 		w.WriteHeader(404)
 	})
 	r := gofight.New()
-	var c Case
-	c.t = t
-	r.GET("/abc").SetDebug(true).Run(lm, c.Hello)
-	r.GET("/status").SetDebug(true).Run(lm, c.Status)
-	r.GET("/").SetDebug(true).SetHeader(gofight.H{"X-Header-Test": "test-header"}).Run(lm, c.Header)
+	var h Http
+	h.t = t
+	r.GET("/abc").SetDebug(true).Run(lm, h.Hello)
+	// r.GET("/status").SetDebug(true).Run(lm, c.Status)
+	// r.GET("/").SetDebug(true).SetHeader(gofight.H{"X-Header-Test": "test-header"}).Run(lm, c.Header)
 }

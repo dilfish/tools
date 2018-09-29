@@ -11,5 +11,5 @@ func TestInitDB(t *testing.T) {
 	if err != nil {
 		t.Error("db error", err)
 	}
-	db.Close()
+	defer db.Close()
 }
