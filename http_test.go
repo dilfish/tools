@@ -20,6 +20,10 @@ func (h *Http) Status(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 	assert.Equal(h.t, 404, r.Code)
 }
 
+func (h *Http) NotAllow(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
+	assert.Equal(h.t, "Not allowed", r.Body.String())
+}
+
 func (h *Http) Header(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 	assert.Equal(h.t, "test-header", rq.Header.Get("X-Header-Test"))
 }
@@ -41,4 +45,5 @@ func TestNewLogMux(t *testing.T) {
 	r.GET("/abc").SetDebug(true).Run(lm, h.Hello)
 	r.GET("/status").SetDebug(true).Run(lm, h.Status)
 	r.GET("/").SetDebug(true).SetHeader(gofight.H{"X-Header-Test": "test-header"}).Run(lm, h.Header)
+	r.POST("/abc").SetDebug(true).Run(lm, h.NotAllow)
 }

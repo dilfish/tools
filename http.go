@@ -27,8 +27,11 @@ func NewLogMux(fn, prefix string) *LogMux {
 	lm := &LogMux{}
 	lm.mux = http.NewServeMux()
 	lm.lw = &LogResponseWriter{}
-	lm.mp = make(map[string]HandlerInfo)
 	lm.logger = InitLog(fn, prefix)
+	if lm.logger == nil {
+		return nil
+	}
+	lm.mp = make(map[string]HandlerInfo)
 	return lm
 }
 
