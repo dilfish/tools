@@ -70,7 +70,7 @@ func (l *LogMux) POST(pattern string, handler func(http.ResponseWriter, *http.Re
 }
 
 func (l *LogMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	h, p := l.mux.Handler(r)
+	_, p := l.mux.Handler(r)
 	hi, ok := l.mp[p]
 	if ok == false {
 		http.NotFound(w, r)
@@ -81,7 +81,6 @@ func (l *LogMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	l.lw.w = w
-	h.ServeHTTP(l.lw, r)
-	l.logger.Println(r.URL.Path+r.URL.RawQuery, string(l.lw.ct), h, p, r)
-    l.logger.Println(h, p)
+	hi.Handler(l.lw, r)
+	l.logger.Println(r.URL.Path+r.URL.RawQuery, string(l.lw.ct))
 }
