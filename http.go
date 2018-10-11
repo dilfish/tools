@@ -82,5 +82,6 @@ func (l *LogMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	l.lw.w = w
 	h.ServeHTTP(l.lw, r)
-	l.logger.Println(r.URL.Path+r.URL.RawQuery, string(l.lw.ct))
+	l.logger.Println(r.URL.Path+r.URL.RawQuery, string(l.lw.ct), h, p, r)
+    l.logger.Println(h, p)
 }
