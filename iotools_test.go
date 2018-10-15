@@ -55,3 +55,54 @@ func TestFileMd5(t *testing.T) {
 		t.Error("n is, md5", n, md5)
 	}
 }
+
+
+func cbTestReadLineArr(line string) error {
+    if line != "hello go" {
+        return ErrBadFmt
+    }
+    return nil
+}
+
+
+func TestReadLineArr(t *testing.T) {
+    err := ReadLineArr("testdata/linedata.txt", cbTestReadLineArr, 2)
+    if err != nil {
+        t.Error("read line error", err)
+    }
+}
+
+
+func TestReadLine(t *testing.T) {
+    err := ReadLine("testdata/linedata.txt", cbTestReadLineArr)
+    if err != nil {
+        t.Error("read line", err)
+    }
+}
+
+
+func TestUnixToBJ(t *testing.T) {
+    tm := UnixToBJ(1539599662)
+    str := tm.Format("2006-01-02 15:04:05 -0700")
+    if str != "2018-10-15 18:34:22 +0800" {
+        t.Error("unix to bj", str)
+    }
+}
+
+
+func TestUnixToPacific(t *testing.T) {
+    tm := UnixToUSPacific(1539599662)
+    str := tm.Format("2006-01-02 15:04:05 -0700")
+    if str != "2018-10-15 03:34:22 -0700" {
+        t.Error("unix to us pacific is", str)
+    }
+}
+
+
+func TestUnixToUTC(t *testing.T) {
+    tm := UnixToUTC(1539599662)
+    str := tm.Format("2006-01-02 15:04:05 -0700")
+    if str != "2018-10-15 10:34:22 +0000" {
+        t.Error("unix to utc is", str)
+    }
+}

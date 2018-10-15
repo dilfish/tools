@@ -15,6 +15,7 @@ type AppendStruct struct {
 	cClose chan bool
 	fn     string
 	err    error
+    pid    int
 }
 
 func openFile(fn string) (*os.File, error) {
@@ -22,11 +23,9 @@ func openFile(fn string) (*os.File, error) {
 }
 
 func (as *AppendStruct) wait() {
-	signal.Notify(as.c, syscall.SIGUSR1)
 	for {
 		select {
 		case <-as.c:
-			<-as.c
 			io.WriteString(os.Stderr, "we got an signal, restart at "+TimeStr())
 			f, err := openFile(as.fn)
 			if err != nil {
@@ -53,6 +52,8 @@ func NewAppender(fn string) (*AppendStruct, error) {
 	as.fn = fn
 	as.c = make(chan os.Signal)
 	as.cClose = make(chan bool)
+    as.pid = os.Getpid()
+    signal.Notify(as.c, syscall.SIGUSR1)
 	go as.wait()
 	return &as, nil
 }
