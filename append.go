@@ -34,6 +34,9 @@ func (as *AppendStruct) wait() {
 				time.Sleep(time.Second)
 				continue
 			}
+            if as.file != nil {
+                as.file.Close()
+            }
 			as.file = f
 		case <-as.cClose:
 			signal.Reset(syscall.SIGUSR1)
@@ -61,6 +64,7 @@ func NewAppender(fn string) (*AppendStruct, error) {
 func (as *AppendStruct) Close() {
 	as.cClose <- true
 	as.file.Close()
+    as.file = nil
 	close(as.c)
 	close(as.cClose)
 }
