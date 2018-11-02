@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+    "sync"
 	"time"
 )
 
@@ -16,6 +17,7 @@ type AppendStruct struct {
 	fn     string
 	err    error
     pid    int
+    lock   sync.Mutex
 }
 
 func openFile(fn string) (*os.File, error) {
@@ -34,7 +36,12 @@ func (as *AppendStruct) wait() {
 				time.Sleep(time.Second)
 				continue
 			}
+            as.lock.Lock()
+            if as.file != nil {
+                as.file.Close()
+            }
 			as.file = f
+            as.lock.Unlock()
 		case <-as.cClose:
 			signal.Reset(syscall.SIGUSR1)
 			return
@@ -59,8 +66,11 @@ func NewAppender(fn string) (*AppendStruct, error) {
 }
 
 func (as *AppendStruct) Close() {
+    as.lock.Lock()
+    defer as.lock.Unlock()
 	as.cClose <- true
 	as.file.Close()
+    as.file = nil
 	close(as.c)
 	close(as.cClose)
 }
@@ -69,6 +79,8 @@ func (as *AppendStruct) Write(bt []byte) (int, error) {
 	if as.err != nil {
 		return 0, as.err
 	}
+    as.lock.Lock()
+    defer as.lock.Unlock()
 	n, err := as.file.Write(bt)
 	if err != nil {
 		as.err = err
