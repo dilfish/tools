@@ -12,7 +12,7 @@ import (
 
 type AppendStruct struct {
 	file   *os.File
-	c      chan os.Signal
+	cSig      chan os.Signal
 	cClose chan bool
 	fn     string
 	err    error
@@ -27,7 +27,10 @@ func openFile(fn string) (*os.File, error) {
 func (as *AppendStruct) wait() {
 	for {
 		select {
-		case <-as.c:
+		case _, ok := <-as.cSig:
+            if ok == false {
+                return
+            }
 			io.WriteString(os.Stderr, "we got an signal, restart at "+TimeStr())
 			f, err := openFile(as.fn)
 			if err != nil {
@@ -44,7 +47,6 @@ func (as *AppendStruct) wait() {
             as.lock.Unlock()
 		case <-as.cClose:
 			signal.Reset(syscall.SIGUSR1)
-			return
 		}
 	}
 }
@@ -57,10 +59,10 @@ func NewAppender(fn string) (*AppendStruct, error) {
 	}
 	as.file = f
 	as.fn = fn
-	as.c = make(chan os.Signal)
+	as.cSig = make(chan os.Signal)
 	as.cClose = make(chan bool)
     as.pid = os.Getpid()
-    signal.Notify(as.c, syscall.SIGUSR1)
+    signal.Notify(as.cSig, syscall.SIGUSR1)
 	go as.wait()
 	return &as, nil
 }
@@ -69,9 +71,10 @@ func (as *AppendStruct) Close() {
     as.lock.Lock()
     defer as.lock.Unlock()
 	as.cClose <- true
-	as.file.Close()
+    signal.Stop(as.cSig)
+	close(as.cSig)
+    as.file.Close()
     as.file = nil
-	close(as.c)
 	close(as.cClose)
 }
 
