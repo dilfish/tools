@@ -1,14 +1,10 @@
 package tools
 
 import (
-	"encoding/json"
 	"net/http"
 	"time"
+    "io/ioutil"
 )
-
-type Client interface {
-	GetUser(id string) (*User, error)
-}
 
 type client struct {
 	http.Client
@@ -20,7 +16,7 @@ type User struct {
 	email string
 }
 
-func New(url string) Client {
+func New(url string) *client {
 	return &client{
 		http.Client{
 			Timeout: time.Duration(1) * time.Second,
@@ -29,20 +25,16 @@ func New(url string) Client {
 	}
 }
 
-func (c *client) GetUser(id string) (*User, error) {
-	req, err := http.NewRequest("GET", c.baseURL+"/user/"+id, nil)
-	if err != nil {
-		return nil, err
-	}
-	resp, err := c.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	var user *User
-	err = json.NewDecoder(resp.Body).Decode(&user)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+
+func (c *client) Get (u string) ([]byte, error) {
+    req, err := http.NewRequest("GET", c.baseURL + u, nil)
+    if err != nil {
+        return nil, err
+    }
+    resp, err := c.Do(req)
+    if err != nil {
+        return nil, err
+    }
+    defer resp.Body.Close()
+    return ioutil.ReadAll(resp.Body)
 }

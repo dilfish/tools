@@ -7,12 +7,10 @@ import (
 	"testing"
 )
 
-const userId = "666"
-
 type Handler struct{}
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path == "/user/"+userId {
+	if r.URL.Path == "/abc" {
 		w.Header().Add("Content-Type", "application/json")
 		w.Write([]byte(`{"name":"test", "email":"a@example.com"}`))
 	}
@@ -23,6 +21,6 @@ func TestClientApi(t *testing.T) {
 	mock := httptest.NewServer(&h)
 	defer mock.Close()
 	client := New(mock.URL)
-	_, err := client.GetUser(userId)
+	_, err := client.Get("/abc")
 	assert.Nil(t, err)
 }
