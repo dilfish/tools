@@ -6,18 +6,13 @@ import (
     "io/ioutil"
 )
 
-type client struct {
+type Cli struct {
 	http.Client
 	baseURL string
 }
 
-type User struct {
-	name  string
-	email string
-}
-
-func New(url string) *client {
-	return &client{
+func New(url string) *Cli {
+	return &Cli {
 		http.Client{
 			Timeout: time.Duration(1) * time.Second,
 		},
@@ -26,7 +21,7 @@ func New(url string) *client {
 }
 
 
-func (c *client) Get (u string) ([]byte, error) {
+func (c *Cli) Get (u string) ([]byte, error) {
     req, err := http.NewRequest("GET", c.baseURL + u, nil)
     if err != nil {
         return nil, err
