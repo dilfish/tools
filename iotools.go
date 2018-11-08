@@ -12,6 +12,7 @@ import (
 	"os"
 	"strings"
 	"time"
+    "net/http"
 )
 
 var ErrBadFmt = errors.New("bad format")
@@ -53,22 +54,27 @@ func ReadFile(fn string) ([]byte, error) {
 
 
 type LineFunc func(line string) error
-
-func ReadLineArr(fn string, lf LineFunc, split int) error {
-	return readLine(fn, lf, split)
-}
-
 func ReadLine(fn string, lf LineFunc) error {
-	return readLine(fn, lf, 0)
+    file, err := os.Open(fn)
+    if err != nil {
+        return err
+    }
+    defer file.Close()
+	return readLine(file, lf, 0)
 }
 
-func readLine(fn string, lf LineFunc, split int) error {
-	file, err := os.Open(fn)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	rd := bufio.NewReader(file)
+
+func GetLine(url string, lf LineFunc) error {
+    resp, err := http.Get(url)
+    if err != nil {
+        return err
+    }
+    defer resp.Body.Close()
+    return readLine(resp.Body, lf, 0)
+}
+
+func readLine(reader io.Reader, lf LineFunc, split int) error {
+	rd := bufio.NewReader(reader)
 	for {
 		line, err := rd.ReadString('\n')
 		if err != nil && err != io.EOF {
