@@ -1,3 +1,5 @@
+// Copyright 2018 Sean.ZH
+
 package tools
 
 import (
@@ -10,6 +12,7 @@ import (
 	"time"
 )
 
+// AppendStruct holds log file needed
 type AppendStruct struct {
 	file   *os.File
 	cSig      chan os.Signal
@@ -51,6 +54,7 @@ func (as *AppendStruct) wait() {
 	}
 }
 
+// NewAppender create an append only log file with debug info
 func NewAppender(fn string) (*AppendStruct, error) {
 	var as AppendStruct
 	f, err := openFile(fn)
@@ -67,6 +71,7 @@ func NewAppender(fn string) (*AppendStruct, error) {
 	return &as, nil
 }
 
+// Close release all resources it holds
 func (as *AppendStruct) Close() {
     as.lock.Lock()
     defer as.lock.Unlock()
@@ -78,6 +83,7 @@ func (as *AppendStruct) Close() {
 	close(as.cClose)
 }
 
+// Write api for file write
 func (as *AppendStruct) Write(bt []byte) (int, error) {
 	if as.err != nil {
 		return 0, as.err
@@ -91,6 +97,7 @@ func (as *AppendStruct) Write(bt []byte) (int, error) {
 	return n, err
 }
 
+// Daemon close stdin stdout
 func Daemon() {
 	os.Stdout.Close()
 	os.Stdin.Close()
@@ -98,6 +105,7 @@ func Daemon() {
 	os.Stdin = nil
 }
 
+// InitLog create a new log object
 func InitLog(fn, prefix string) *log.Logger {
 	as, err := NewAppender(fn)
 	if err != nil {

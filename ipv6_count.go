@@ -1,3 +1,5 @@
+// Copyright 2018 Sean.ZH
+
 package tools
 
 import (
@@ -8,28 +10,32 @@ import (
 )
 
 
+// StateCount hold country name and ipv6 address count
 type StateCount struct {
     Name string
     Count uint64
 }
 
 
+// StateCountSlice impl sort.Sort
 type StateCountSlice []StateCount
+// Len is for sort.Sort
 func (scs StateCountSlice) Len() int {
     return len(scs)
 }
 
-
+// Less is for sort.Sort
 func (scs StateCountSlice) Less (i, j int) bool {
     return scs[i].Count > scs[j].Count
 }
 
-
+// Swap is for sort.Sort
 func (scs StateCountSlice) Swap (i, j int) {
     scs[i], scs[j] = scs[j], scs[i]
 }
 
 
+// IPv6Counter holds all countrys data
 type IPv6Counter struct {
     stateList []string
     current string
@@ -37,6 +43,7 @@ type IPv6Counter struct {
     sortCountList []StateCount
 }
 
+// NewIPv6Counter create service
 func NewIPv6Counter() *IPv6Counter {
     tmp := []string {
         "AD","AE","AF","AG","AI","AL","AM","AO","AR","AS","AT",
@@ -120,6 +127,7 @@ func (ipv6c *IPv6Counter) sort_counter () {
 }
 
 
+// Renew get data from website
 func (ipv6c *IPv6Counter) Renew() error {
     ipv6c.current = ""
     ipv6c.sortCountList = nil
@@ -133,6 +141,7 @@ func (ipv6c *IPv6Counter) Renew() error {
 }
 
 
+// String return's data as string
 func (ipv6c *IPv6Counter) String() string {
     str := ""
     for _, state := range ipv6c.sortCountList {

@@ -1,3 +1,5 @@
+// Copyright 2018 Sean.ZH
+
 package tools
 
 import (
@@ -5,6 +7,7 @@ import (
 	"net"
 )
 
+// DIG like dig
 func DIG(domain, remote, client_ip string) ([]dns.RR, error) {
 	m := new(dns.Msg)
 	m.SetQuestion(domain, dns.TypeA)
@@ -27,6 +30,7 @@ func DIG(domain, remote, client_ip string) ([]dns.RR, error) {
 	return r.Answer, nil
 }
 
+// IP2Num ipv4 to a uint32 number
 func IP2Num(ipstr string) uint32 {
 	ip := net.ParseIP(ipstr)
 	if ip == nil {
@@ -44,6 +48,7 @@ func IP2Num(ipstr string) uint32 {
 	return n
 }
 
+// Num2IP uint32 number to ipv4
 func Num2IP(ipnum uint32) string {
 	c1 := ipnum / 256 / 256 / 256
 	c2 := (ipnum / 256 / 256) % 256

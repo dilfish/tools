@@ -1,3 +1,5 @@
+// Copyright 2018 Sean.ZH
+
 package tools
 
 import (
@@ -15,10 +17,14 @@ import (
     "net/http"
 )
 
+// ErrBadFmt bad format in file
 var ErrBadFmt = errors.New("bad format")
+// ErrNoSuch not exists
 var ErrNoSuch = errors.New("no such")
+// ErrDupData indicate duplicate data
 var ErrDupData = errors.New("dup data")
 
+// ReadConfig read file to interface
 func ReadConfig(fn string, conf interface{}) error {
 	bt, err := ReadFile(fn)
 	if err != nil {
@@ -27,11 +33,13 @@ func ReadConfig(fn string, conf interface{}) error {
 	return json.Unmarshal(bt, conf)
 }
 
+// RandInt generate a int limited to w
 func RandInt(w int) int32 {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Int31n(int32(w))
 }
 
+// RandStr return random string length w
 func RandStr(w int) string {
 	rand.Seed(time.Now().UnixNano())
 	base := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
@@ -43,6 +51,7 @@ func RandStr(w int) string {
 	return str
 }
 
+// ReadFile read all file content as byte
 func ReadFile(fn string) ([]byte, error) {
 	file, err := os.Open(fn)
 	if err != nil {
@@ -53,7 +62,9 @@ func ReadFile(fn string) ([]byte, error) {
 }
 
 
+// LineFunc read a file into lines
 type LineFunc func(line string) error
+// ReadLine read line and calls back lf
 func ReadLine(fn string, lf LineFunc) error {
     file, err := os.Open(fn)
     if err != nil {
@@ -64,6 +75,7 @@ func ReadLine(fn string, lf LineFunc) error {
 }
 
 
+// GetLine get http content as file and calls lf on every line
 func GetLine(url string, lf LineFunc) error {
     resp, err := http.Get(url)
     if err != nil {
@@ -101,6 +113,7 @@ func readLine(reader io.Reader, lf LineFunc, split int) error {
 	return nil
 }
 
+// FileMd5 calc file's md5
 func FileMd5(fn string) (int, string, error) {
 	file, err := os.Open(fn)
 	if err != nil {
@@ -114,14 +127,17 @@ func FileMd5(fn string) (int, string, error) {
 	return len(bt), fmt.Sprintf("%x", md5.Sum(bt)), nil
 }
 
+// UnixToBJ unix timestamp to beijing time
 func UnixToBJ(unix int64) time.Time {
 	return unixTo(unix, "Asia/Shanghai")
 }
 
+// UnixToUSPacifix unix timestamp to the U.S time
 func UnixToUSPacific(unix int64) time.Time {
 	return unixTo(unix, "US/Pacific")
 }
 
+// UnixToUTC unix timestamp to utc time
 func UnixToUTC(unix int64) time.Time {
 	return unixTo(unix, "UTC")
 }
@@ -135,6 +151,7 @@ func unixTo(unix int64, name string) time.Time {
 	return t.In(l)
 }
 
+// TimeStr return standard time string
 func TimeStr() string {
 	return time.Now().Format("2006-01-02 15:04:05")
 }

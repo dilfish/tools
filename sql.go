@@ -1,3 +1,5 @@
+// Copyright 2018 Sean.ZH
+
 package tools
 
 import (
@@ -6,6 +8,7 @@ import (
 	"strconv"
 )
 
+// DBConfig for mysql
 type DBConfig struct {
 	User   string `json:"user"`
 	Pass   string `json:"pass"`
@@ -23,6 +26,7 @@ func initDB(conf *DBConfig) (*sql.DB, error) {
 	return sql.Open("mysql", dsn)
 }
 
+// InitDB create new db object for mysql
 func InitDB(conf *DBConfig) (*sql.DB, error) {
 	db, err := initDB(conf)
 	if err != nil {
