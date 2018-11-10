@@ -1,3 +1,5 @@
+// Copyright 2018 Sean.ZH
+
 package tools
 
 import (
@@ -6,14 +8,18 @@ import (
 	"errors"
 )
 
+// ApiKey of mailgun
 var ApiKey = ""
+// PubKey of mailgun
 var PubKey = ""
 
+// InitMail set api and pub key
 func InitMail(api, pub string) {
 	ApiKey = api
 	PubKey = pub
 }
 
+// SendMail send an email
 func SendMail(to, title, content string) error {
 	if ApiKey == "" || PubKey == "" {
 		return errors.New("You need to call InitMail first")

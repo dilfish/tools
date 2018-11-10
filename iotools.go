@@ -132,7 +132,7 @@ func UnixToBJ(unix int64) time.Time {
 	return unixTo(unix, "Asia/Shanghai")
 }
 
-// UnixToUSPacifix unix timestamp to the U.S time
+// UnixToUSPacific unix timestamp to the U.S time
 func UnixToUSPacific(unix int64) time.Time {
 	return unixTo(unix, "US/Pacific")
 }

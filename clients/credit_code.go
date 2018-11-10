@@ -1,3 +1,5 @@
+// Copyright 2018 Sean.ZH
+
 package tools
 
 import (
@@ -17,12 +19,14 @@ import (
 var resultFile *os.File
 var counter int
 
+// ResultData is response json
 type ResultData struct {
 	Ent  string `json:"entname"`
 	Code string `json:"creditCode"`
 	// ...
 }
 
+// Result is response json
 type Result struct {
 	Msg    string       `json:"message"`
 	Status int          `json:"status"`
@@ -30,6 +34,7 @@ type Result struct {
 	// ...
 }
 
+// Go is to go download
 func Go(name string) error {
 	time.Sleep(time.Millisecond * 500)
 
@@ -91,10 +96,12 @@ func readFile(line string) error {
 	return nil
 }
 
+// ReadInput read files
 func ReadInput() error {
 	return tools.ReadLine("./list.txt", readFile)
 }
 
+// GetCreditCode get code in a file
 func GetCreditCode() {
 	var err error
 	resultFile, err = os.Create("./result.txt")

@@ -4,7 +4,7 @@ package tools
 
 import (
 	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql" // Just import mysql, no need to specify it
 	"strconv"
 )
 

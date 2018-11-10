@@ -8,7 +8,7 @@ import (
 )
 
 // DIG like dig
-func DIG(domain, remote, client_ip string) ([]dns.RR, error) {
+func DIG(domain, remote, clientIP string) ([]dns.RR, error) {
 	m := new(dns.Msg)
 	m.SetQuestion(domain, dns.TypeA)
 	o := new(dns.OPT)
@@ -19,7 +19,7 @@ func DIG(domain, remote, client_ip string) ([]dns.RR, error) {
 	e.Family = 1
 	e.SourceNetmask = 32
 	e.SourceScope = 0
-	e.Address = net.ParseIP(client_ip).To4()
+	e.Address = net.ParseIP(clientIP).To4()
 	o.Option = append(o.Option, e)
 	m.Extra = append(m.Extra, o)
 	c := new(dns.Client)

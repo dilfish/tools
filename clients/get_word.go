@@ -1,3 +1,5 @@
+// Copyright 2018 Sean.ZH
+
 package tools
 
 import (
@@ -32,6 +34,7 @@ func doKGet(res, k string) ([]byte, error) {
 	return ioutil.ReadAll(resp.Body)
 }
 
+// DWRSyllable
 type DWRSyllable struct {
 	Count int      `json:"count"`
 	List  []string `json:"list"`
@@ -53,12 +56,14 @@ type DWRResults struct {
 	Result []DWResult
 }
 
+// DetailWordResults holds result and pronucncation of word
 type DetailWordResults struct {
 	Results  []DWResult  `json:"results"`
 	Syllable DWRSyllable `json:"syllables"`
 	Pronunce DWRPronunce `json:"pronunciation"`
 }
 
+// DetailWord get word detail
 func DetailWord(word, k string) (string, error) {
 	rsc := "/words/" + word
 	bt, err := doKGet(rsc, k)
@@ -68,8 +73,10 @@ func DetailWord(word, k string) (string, error) {
 	return string(bt), nil
 }
 
+// Keys is api token for word
 var Keys = []string{ /* copied from github */ }
 
+// WriteInfo write word info to file
 func WriteInfo(i, j int, name, ct string) error {
 	fn := strconv.Itoa(i) + "/" + strconv.Itoa(j) + "/" + name + ".txt"
 	file, err := os.Create(fn)
@@ -81,6 +88,7 @@ func WriteInfo(i, j int, name, ct string) error {
 	return err
 }
 
+// Loop read words from file
 func Loop() error {
 	file, err := os.Open("list.txt")
 	if err != nil {

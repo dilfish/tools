@@ -9,24 +9,24 @@ import (
 	"testing"
 )
 
-type Http struct {
+type HTTP struct {
 	t *testing.T
 }
 
-func (h *Http) Hello(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
+func (h *HTTP) Hello(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 	assert.Equal(h.t, "hello", r.Body.String())
 	assert.Equal(h.t, http.StatusOK, r.Code)
 }
 
-func (h *Http) Status(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
+func (h *HTTP) Status(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 	assert.Equal(h.t, 404, r.Code)
 }
 
-func (h *Http) NotAllow(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
+func (h *HTTP) NotAllow(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 	assert.Equal(h.t, "Not allowed", r.Body.String())
 }
 
-func (h *Http) Header(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
+func (h *HTTP) Header(r gofight.HTTPResponse, rq gofight.HTTPRequest) {
 	assert.Equal(h.t, "test-header", rq.Header.Get("X-Header-Test"))
 }
 
@@ -42,7 +42,7 @@ func TestNewLogMux(t *testing.T) {
 		w.WriteHeader(404)
 	})
 	r := gofight.New()
-	var h Http
+	var h HTTP
 	h.t = t
 	r.GET("/abc").SetDebug(true).Run(lm, h.Hello)
 	r.GET("/status").SetDebug(true).Run(lm, h.Status)

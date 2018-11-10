@@ -1,3 +1,5 @@
+// Copyright 2018 Sean.ZH
+
 package tools
 
 import (
@@ -9,15 +11,19 @@ import (
 	"net/url"
 )
 
+// Token is dnspod client token
 const Token = "1111111111111111111111111"
 
+// ErrBadStatus is a error status for dnspod
 var ErrBadStatus = errors.New("status is not 1")
 
+// Status we just need to known it's status
 type Status struct {
 	Code string `json:"code"`
 	// ...
 }
 
+// DNSPodRecordModify modify a record
 func DNSPodRecordModify(domain, sub, rid, nip string) error {
 	type RecordModifyStruct struct {
 		Status `json:"status"`
@@ -47,6 +53,7 @@ func DNSPodRecordModify(domain, sub, rid, nip string) error {
 	return nil
 }
 
+// DNSPodRecordList read all records
 func DNSPodRecordList(domain, sub string) (string, error) {
 	type RecordStruct struct {
 		Id string `json:"id"`
@@ -74,6 +81,7 @@ func DNSPodRecordList(domain, sub string) (string, error) {
 	return dpr.Records[0].Id, nil
 }
 
+// SendPost send post to api
 func SendPost(u string, v *url.Values, ret interface{}) error {
 	resp, err := http.PostForm(u, *v)
 	if err != nil {
@@ -87,6 +95,7 @@ func SendPost(u string, v *url.Values, ret interface{}) error {
 	return json.Unmarshal(bt, &ret)
 }
 
+// ModifyRecord is a demo
 func ModifyRecord(sub, domain, nip string) error {
 	rid, err := DNSPodRecordList(domain, sub)
 	if err != nil {

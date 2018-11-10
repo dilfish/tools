@@ -100,7 +100,7 @@ func (ipv6c *IPv6Counter) count (line string) error {
 }
 
 
-func (ipv6c *IPv6Counter) get_files() error {
+func (ipv6c *IPv6Counter) getFiles() error {
     base := "http://ipverse.net/ipblocks/data/countries/"
     for _, state := range ipv6c.stateList {
         ipv6c.current = state
@@ -114,8 +114,8 @@ func (ipv6c *IPv6Counter) get_files() error {
 }
 
 
-func (ipv6c *IPv6Counter) sort_counter () {
-    scList := make([]StateCount, 0)
+func (ipv6c *IPv6Counter) sortCounter () {
+    var scList []StateCount
     for k, v := range ipv6c.stateCountMap {
         var sc StateCount
         sc.Name = k
@@ -132,11 +132,11 @@ func (ipv6c *IPv6Counter) Renew() error {
     ipv6c.current = ""
     ipv6c.sortCountList = nil
     ipv6c.stateCountMap = make(map[string]uint64)
-    err := ipv6c.get_files()
+    err := ipv6c.getFiles()
     if err != nil {
         return err
     }
-    ipv6c.sort_counter()
+    ipv6c.sortCounter()
     return nil
 }
 
