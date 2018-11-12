@@ -67,14 +67,6 @@ func cbTestReadLineArr(line string) error {
 }
 
 
-func TestReadLineArr(t *testing.T) {
-    err := ReadLineArr("testdata/linedata.txt", cbTestReadLineArr, 2)
-    if err != nil {
-        t.Error("read line error", err)
-    }
-}
-
-
 func TestReadLine(t *testing.T) {
     err := ReadLine("testdata/linedata.txt", cbTestReadLineArr)
     if err != nil {
