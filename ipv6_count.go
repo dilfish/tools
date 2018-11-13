@@ -149,3 +149,9 @@ func (ipv6c *IPv6Counter) String() string {
     }
     return str
 }
+
+
+// Struct returns data as slice of struct
+func (ipv6c *IPv6Counter) Struct() []StateCount {
+    return ipv6c.sortCountList
+}

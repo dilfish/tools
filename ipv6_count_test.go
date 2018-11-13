@@ -29,4 +29,8 @@ func TestNewIPv6Counter(t *testing.T) {
     if len(str) < 100 {
         t.Error("ipv6c string", str)
     }
+    list := ipv6c.Struct()
+    if len(list)== 0 {
+        t.Error("struct err")
+    }
 }
