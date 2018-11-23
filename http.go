@@ -90,9 +90,9 @@ func (l *LogMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	l.lw.w = w
 	hi.Handler(l.lw, r)
-    if len(l.lw.ct) > 100 {
-        l.logger.Println("sizeof", len(l.lw.ct))
-    } else {
-	    l.logger.Println(r.URL.Path+r.URL.RawQuery, string(l.lw.ct))
-    }
+	if len(l.lw.ct) > 100 {
+		l.logger.Println("sizeof", len(l.lw.ct))
+	} else {
+		l.logger.Println(r.URL.Path+r.URL.RawQuery, string(l.lw.ct))
+	}
 }
