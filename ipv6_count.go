@@ -158,7 +158,7 @@ func getRealNum(c uint64) string {
 func (ipv6c *IPv6Counter) RealString() string {
 	str := ""
 	for _, state := range ipv6c.sortCountList {
-		str = str + state.Name + "\t" + getReadNum() + "\n"
+		str = str + state.Name + "\t" + getRealNum(state.Count) + "\n"
 	}
 	return str
 }
