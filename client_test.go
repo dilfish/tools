@@ -22,7 +22,7 @@ func TestClientApi(t *testing.T) {
 	var h Handler
 	mock := httptest.NewServer(&h)
 	defer mock.Close()
-	client := New(mock.URL)
+	client := New(mock.URL, 1)
 	_, err := client.Get("/abc")
 	assert.Nil(t, err)
 }
