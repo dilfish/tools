@@ -29,6 +29,11 @@ func (c *Cli) SetBaseURL(u string) {
 	c.baseURL = u
 }
 
+// GetBaseURL returns current baseUrl
+func (c *Cli) GetBaseURL() string {
+	return c.baseURL
+}
+
 // Get do a get for client
 func (c *Cli) Get(u string) ([]byte, error) {
 	req, err := http.NewRequest("GET", c.baseURL+u, nil)
