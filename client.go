@@ -3,9 +3,9 @@
 package tools
 
 import (
+	"io/ioutil"
 	"net/http"
 	"time"
-    "io/ioutil"
 )
 
 // Cli package a http client and baseurl
@@ -15,26 +15,25 @@ type Cli struct {
 }
 
 // New create an cli object
-func New(url string) *Cli {
-	return &Cli {
+func New(url string, sec int) *Cli {
+	return &Cli{
 		http.Client{
-			Timeout: time.Duration(1) * time.Second,
+			Timeout: time.Duration(sec) * time.Second,
 		},
 		url,
 	}
 }
 
-
 // Get do a get for client
-func (c *Cli) Get (u string) ([]byte, error) {
-    req, err := http.NewRequest("GET", c.baseURL + u, nil)
-    if err != nil {
-        return nil, err
-    }
-    resp, err := c.Do(req)
-    if err != nil {
-        return nil, err
-    }
-    defer resp.Body.Close()
-    return ioutil.ReadAll(resp.Body)
+func (c *Cli) Get(u string) ([]byte, error) {
+	req, err := http.NewRequest("GET", c.baseURL+u, nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := c.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return ioutil.ReadAll(resp.Body)
 }
