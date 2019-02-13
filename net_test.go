@@ -20,6 +20,20 @@ func TestNum2IP(t *testing.T) {
 	}
 }
 
+func TestIPv62Num(t *testing.T) {
+	inet, iint := IPv62Num("1::1")
+	if inet != 281474976710656 || iint != 1 {
+		t.Error("expect 2**48 and 1, got", inet, iint)
+	}
+}
+
+func TestNum2IPv6(t *testing.T) {
+	str := Num2IPv6(1, 1)
+	if str != "0000:0000:0000:0001:0000:0000:0000:0001" {
+		t.Error("expect 0000:0000:0000:0001:0000:0000:0000:0001, got", str)
+	}
+}
+
 func TestDIG(t *testing.T) {
 	_, err := DIG("baidu.com.", "114.114.114.114", "1.1.1.1")
 	if err != nil {
