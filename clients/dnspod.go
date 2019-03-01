@@ -11,8 +11,15 @@ import (
 	"net/url"
 )
 
-// Token is dnspod client token
-const Token = "1111111111111111111111111"
+// DnspodClient defines a client
+type DnspodClient struct {
+	Token string
+}
+
+// NewDnspodClient returns a new client
+func NewDnspodClient(token string) *DnspodClient {
+	return &DnspodClient{Token: token}
+}
 
 // ErrBadStatus is a error status for dnspod
 var ErrBadStatus = errors.New("status is not 1")
@@ -24,7 +31,7 @@ type Status struct {
 }
 
 // DNSPodRecordModify modify a record
-func DNSPodRecordModify(domain, sub, rid, nip string) error {
+func dNSPodRecordModify(token, domain, sub, rid, nip string) error {
 	type RecordModifyStruct struct {
 		Status `json:"status"`
 	}
@@ -38,11 +45,11 @@ func DNSPodRecordModify(domain, sub, rid, nip string) error {
 		"value":          {nip},
 		"ttl":            {"600"},
 		"format":         {"json"},
-		"login_token":    {Token},
+		"login_token":    {token},
 	}
 	u := "https://dnsapi.cn/Record.Modify"
 	var dpr RecordModifyStruct
-	err := SendPost(u, &v, &dpr)
+	err := sendPost(u, &v, &dpr)
 	if err != nil {
 		return err
 	}
@@ -54,7 +61,7 @@ func DNSPodRecordModify(domain, sub, rid, nip string) error {
 }
 
 // DNSPodRecordList read all records
-func DNSPodRecordList(domain, sub string) (string, error) {
+func dNSPodRecordList(token, domain, sub string) (string, error) {
 	type RecordStruct struct {
 		Id string `json:"id"`
 	}
@@ -65,12 +72,12 @@ func DNSPodRecordList(domain, sub string) (string, error) {
 	v := url.Values{
 		"domain":      {domain},
 		"sub_domain":  {sub},
-		"login_token": {Token},
+		"login_token": {token},
 		"format":      {"json"},
 	}
 	u := "https://dnsapi.cn/Record.List"
 	var dpr RecordListStruct
-	err := SendPost(u, &v, &dpr)
+	err := sendPost(u, &v, &dpr)
 	if err != nil {
 		return "", err
 	}
@@ -82,7 +89,7 @@ func DNSPodRecordList(domain, sub string) (string, error) {
 }
 
 // SendPost send post to api
-func SendPost(u string, v *url.Values, ret interface{}) error {
+func sendPost(u string, v *url.Values, ret interface{}) error {
 	resp, err := http.PostForm(u, *v)
 	if err != nil {
 		return err
@@ -96,12 +103,12 @@ func SendPost(u string, v *url.Values, ret interface{}) error {
 }
 
 // ModifyRecord is a demo
-func ModifyRecord(sub, domain, nip string) error {
-	rid, err := DNSPodRecordList(domain, sub)
+func (d *DnspodClient) ModifyRecord(sub, domain, nip string) error {
+	rid, err := dNSPodRecordList(d.Token, domain, sub)
 	if err != nil {
 		return err
 	}
-	return DNSPodRecordModify(domain, sub, rid, nip)
+	return dNSPodRecordModify(d.Token, domain, sub, rid, nip)
 }
 
 // Call ModifyRecord(sub, domain, nip)
