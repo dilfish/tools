@@ -4,6 +4,10 @@ package tools
 import (
 	"net/http"
 	"time"
+	"encoding/json"
+	"bytes"
+	"io/ioutil"
+	"errors"
 )
 
 
@@ -12,10 +16,21 @@ import (
 /// collection construct from requestinfo 
 
 
+var ErrPostOne = errors.New("post one error")
+var ErrGetStat = errors.New("get stat error")
+
+
 // HTTPLogger holds api server's url
 type RequestLogger struct {
 	PostUrl string
 	GetUrl string
+}
+
+
+// ErrInfo
+type ErrInfo struct {
+	Err int `json:"err"`
+	Msg string `json:"msg"`
 }
 
 
@@ -36,6 +51,17 @@ type RequestInfo struct {
 }
 
 
+// RequestToInfo makes info from request
+func RequestToInfo(req *http.Request, t time.Time) RequestInfo {
+	var ri RequestInfo
+	ri.Method = req.Method
+	ri.Path = req.URL.Path
+	ri.ClientIP = req.RemoteAddr
+	ri.Time = t
+	return ri
+}
+
+
 // NewRequestLogger gives a new instance
 func NewRequestLogger(post, get string) *RequestLogger {
 	return &RequestLogger{PostUrl: post, GetUrl: get}
@@ -44,6 +70,26 @@ func NewRequestLogger(post, get string) *RequestLogger {
 
 // PostOne post one request log to  server
 func (hl *RequestLogger) PostOne(req *http.Request) error {
+	ri := RequestToInfo(req, time.Now())
+	bt, _ := json.Marshal(ri)
+	buf := bytes.NewBuffer(bt)
+	resp, err := http.Post(hl.PostUrl, "application/json", buf)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	bt, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	var ret ErrInfo
+	err = json.Unmarshal(bt, &ret)
+	if err != nil {
+		return err
+	}
+	if ret.Err != 0 {
+		return ErrPostOne
+	}
 	return nil
 }
 
