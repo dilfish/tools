@@ -8,8 +8,8 @@ import (
 	"bytes"
 	"io/ioutil"
 	"errors"
-	"labix.org/v2/mgo/bson"
-	"labix.org/v2/mgo"
+	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2"
 )
 
 
