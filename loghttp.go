@@ -184,11 +184,11 @@ type ReqLogDB struct {
 
 // MgoConfig is copyed
 type MgoConfig struct {
-	Addrs []string
-	Username string
-	Password string
-	DB string
-	Coll string
+	Addrs []string `json:"Addrs"`
+	Username string `json:"user"`
+	Password string `json:"pass"`
+	DB string `json:"db"`
+	Coll string `json:"coll"`
 }
 
 
