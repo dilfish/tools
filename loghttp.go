@@ -10,6 +10,7 @@ import (
 	"errors"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2"
+	"strings"
 )
 
 
@@ -56,7 +57,12 @@ func RequestToInfo(req *http.Request, t time.Time) RequestInfo {
 	var ri RequestInfo
 	ri.Method = req.Method
 	ri.Path = req.URL.Path
-	ri.ClientIP = req.RemoteAddr
+	arr := strings.Split(req.RemoteAddr, ":")
+	if len(arr) == 2 {
+		ri.ClientIP = arr[0]
+	} else {
+		ri.ClientIP = req.RemoteAddr
+	}
 	ri.Time = t
 	return ri
 }
@@ -165,6 +171,9 @@ func (s *ServeRequestLogger) GetStat (start, end time.Time) (*RequestLoggerStat,
 		return nil, err
 	}
 	stat := new(RequestLoggerStat)
+	stat.MethodCount = make(map[string]int64)
+	stat.PathCount = make(map[string]int64)
+	stat.ClientIPCount = make(map[string]int64)
 	for _, r := range ris {
 		if r.Method != "" {
 			stat.MethodCount[r.Method] += 1
