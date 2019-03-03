@@ -8,12 +8,9 @@ import (
 	"bytes"
 	"io/ioutil"
 	"errors"
+	"labix.org/v2/mgo/bson"
+	"labix.org/v2/mgo"
 )
-
-
-/// DB MAP
-/// a collection for a name
-/// collection construct from requestinfo 
 
 
 var ErrPostOne = errors.New("post one error")
@@ -36,6 +33,7 @@ type ErrInfo struct {
 
 // RequestLoggerStat holds logs from start to end
 type RequestLoggerStat struct {
+	ErrInfo
 	MethodCount map[string]int64 `json:"methodCount"`
 	PathCount map[string]int64 `json:"pathCount"`
 	ClientIPCount map[string]int64 `json:"clientIPCount"`
@@ -44,10 +42,12 @@ type RequestLoggerStat struct {
 
 // RequestInfo retrieves all info in http.Request
 type RequestInfo struct {
-	Method string `json:"method"` // request method, get, post, put, head etc.
-	Path string `json:"path"` // url.Path
-	ClientIP string `json:"clientIP"` // client ip
-	Time time.Time `json:"time"` // when does the request fired
+	Id string `json:"_" bson:"_id"` // mongodb id
+	Name string `json:"name" bson:"name"` // log name
+	Method string `json:"method" bson:"method"` // request method, get, post, put, head etc.
+	Path string `json:"path" bson:"path"` // url.Path
+	ClientIP string `json:"clientIP" bson:"clientIP"` // client ip
+	Time time.Time `json:"time" bson:"time"` // when does the request fired
 }
 
 
@@ -71,19 +71,8 @@ func NewRequestLogger(post, get string) *RequestLogger {
 // PostOne post one request log to  server
 func (hl *RequestLogger) PostOne(req *http.Request) error {
 	ri := RequestToInfo(req, time.Now())
-	bt, _ := json.Marshal(ri)
-	buf := bytes.NewBuffer(bt)
-	resp, err := http.Post(hl.PostUrl, "application/json", buf)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	bt, err = ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-	var ret ErrInfo
-	err = json.Unmarshal(bt, &ret)
+	ret := new(ErrInfo)
+	err := DoJsonPost(hl.PostUrl, ri, ret)
 	if err != nil {
 		return err
 	}
@@ -94,35 +83,149 @@ func (hl *RequestLogger) PostOne(req *http.Request) error {
 }
 
 
+// DoJsonPost is a general api for http post
+func DoJsonPost(uri string, args, ret interface{}) error {
+	bt, err := json.Marshal(args)
+	if err != nil {
+		return err
+	}
+	buf := bytes.NewBuffer(bt)
+	resp, err := http.Post(uri, "application/json", buf)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	bt, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bt, &ret)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// StatRequestInfo just specify start and end time
+type StatRequestInfo struct {
+	Start time.Time `json:"start"`
+	End time.Time `json:"end"`
+}
+
 // GetStat get log stat from start to end
 func (hl *RequestLogger) GetStat(start, end time.Time) (*RequestLoggerStat, error) {
-	return nil, nil
+	var sri StatRequestInfo
+	sri.Start = start
+	sri.End = end
+	ret := new(RequestLoggerStat)
+	err := DoJsonPost(hl.GetUrl, sri, ret)
+	if err != nil {
+		return nil, err
+	}
+	if ret.Err != 0 {
+		return nil, ErrGetStat
+	}
+	return ret, nil
 }
+
+
+///////////////////// server side ///////////////////////////
+
 
 
 // ServeRequestLogger is server side object of request logger
 type ServeRequestLogger struct {
-	DBUrl string
-	Granularity time.Time
-	Name string
+	DB *ReqLogDB
+	Conf MgoConfig
 }
 
 
 // NewServeRequestLogger create instance of server side logger
-func NewServeRequestLogger(dbu, name string, gra time.Time) *ServeRequestLogger {
-	return &ServeRequestLogger{DBUrl: dbu, Granularity: gra, Name: name}
+func NewServeRequestLogger(conf MgoConfig) *ServeRequestLogger {
+	db := OpenReqLogDB(conf)
+	if db == nil {
+		return nil
+	}
+	return &ServeRequestLogger{Conf: conf, DB: db}
 }
 
 
 // OneRequest handle one request
 // record it into mongodb
 func (s *ServeRequestLogger) OneRequest (r *RequestInfo) error {
-	return nil
+	return s.DB.InsertOne(r)
 }
 
 
 // GetStat get data from mongodb
 // and give back ip info
 func (s *ServeRequestLogger) GetStat (start, end time.Time) (*RequestLoggerStat, error) {
-	return nil, nil
+	ris, err := s.DB.FindDuration(start, end)
+	if err != nil {
+		return nil, err
+	}
+	stat := new(RequestLoggerStat)
+	for _, r := range ris {
+		if r.Method != "" {
+			stat.MethodCount[r.Method] += 1
+		}
+		stat.PathCount[r.Path] += 1
+		stat.ClientIPCount[r.ClientIP] += 1
+	}
+	return stat, nil
+}
+
+
+// ReqLogDB to mongodb
+type ReqLogDB struct {
+	Coll mgo.Collection
+	Session *mgo.Session
+}
+
+// MgoConfig is copyed
+type MgoConfig struct {
+	Addrs []string
+	Username string
+	Password string
+	DB string
+	Coll string
+}
+
+
+// OpenReqLogDB opens new db
+func OpenReqLogDB(conf MgoConfig) *ReqLogDB {
+	conf.Coll = "reqLog"
+	info := mgo.DialInfo{
+		Addrs:    conf.Addrs,
+		Username: conf.Username,
+		Password: conf.Password,
+		Database: conf.DB,
+	}
+	session, err := mgo.DialWithInfo(&info)
+	if err != nil {
+		return nil
+	}
+	db := session.DB(conf.DB)
+	c := db.C(conf.Coll)
+	return &ReqLogDB{
+		Coll: *c,
+		Session: session,
+	}
+}
+
+
+// FindDuration find logs from start to end
+func (db *ReqLogDB) FindDuration(start, end time.Time) ([]RequestInfo, error) {
+	var ri []RequestInfo
+	err := db.Coll.Find(bson.M{"time":bson.M{"$gt": start, "$lt": end}}).All(&ri)
+	return ri, err
+}
+
+
+// InsertOne insert one log
+func (db *ReqLogDB) InsertOne(ri *RequestInfo) error {
+	if ri.Id == "" {
+		ri.Id = bson.NewObjectId().Hex()
+	}
+	return db.Coll.Insert(ri)
 }
