@@ -89,6 +89,8 @@ func (l *LogMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	l.lw.w = w
+	// limit to 200 bytes
+	r.Body = http.MaxBytesReader(w, r.Body, 200)
 	hi.Handler(l.lw, r)
 	if len(l.lw.ct) > 100 {
 		l.logger.Println("sizeof", len(l.lw.ct))
