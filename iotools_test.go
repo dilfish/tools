@@ -4,6 +4,9 @@ package tools
 
 import (
 	"testing"
+	"os"
+	"io/ioutil"
+	"errors"
 )
 
 type Config struct {
@@ -99,4 +102,30 @@ func TestUnixToUTC(t *testing.T) {
     if str != "2018-10-15 10:34:22 +0000" {
         t.Error("unix to utc is", str)
     }
+}
+
+
+func dfsCb(name string) error {
+	file, err := os.Open(name)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	bt, err := ioutil.ReadAll(file)
+	if err != nil {
+		return err
+	}
+	if string(bt) != "abcd\n" {
+		return errors.New("not abcd but:" + string(bt))
+	}
+	return nil
+}
+
+
+func TestDFSIter(t *testing.T) {
+	dir := "./testdata/lv1"
+	ret := DFSIter(dir, dfsCb)
+	if len(ret) != 0 {
+		t.Error("we have ret:", ret)
+	}
 }

@@ -14,7 +14,7 @@ import (
 	"os"
 	"strings"
 	"time"
-    "net/http"
+	"net/http"
 )
 
 // ErrBadFmt bad format in file
@@ -154,4 +154,39 @@ func unixTo(unix int64, name string) time.Time {
 // TimeStr return standard time string
 func TimeStr() string {
 	return time.Now().Format("2006-01-02 15:04:05")
+}
+
+
+func dfsCallback(dir string, ret map[string]error, cb DFSCallback) {
+	file, err := os.Open(dir)
+	if err != nil {
+		ret[dir] = err
+		return
+	}
+	defer file.Close()
+	fi, err := file.Readdir(-1)
+	if err != nil {
+		ret[dir] = err
+		return
+	}
+	for _, f := range fi {
+		if f.IsDir() == false {
+			err = cb(dir + "/" + f.Name())
+			if err != nil {
+				ret[dir + "/" + f.Name()] = err
+			}
+		} else {
+			dfsCallback(dir + "/" + f.Name(), ret, cb)
+		}
+	}
+}
+
+
+// DFSIter find every file at a dir
+// and calls cb for every file
+type DFSCallback func (string) error
+func DFSIter(dir string, cb DFSCallback) map[string]error {
+	ret := make(map[string]error)
+	dfsCallback(dir, ret, cb)
+	return ret
 }
