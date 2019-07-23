@@ -7,20 +7,20 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
-    "sync"
 	"time"
 )
 
 // AppendStruct holds log file needed
 type AppendStruct struct {
 	file   *os.File
-	cSig      chan os.Signal
+	cSig   chan os.Signal
 	cClose chan bool
 	fn     string
 	err    error
-    pid    int
-    lock   sync.Mutex
+	pid    int
+	lock   sync.Mutex
 }
 
 func openFile(fn string) (*os.File, error) {
@@ -31,9 +31,9 @@ func (as *AppendStruct) wait() {
 	for {
 		select {
 		case _, ok := <-as.cSig:
-            if ok == false {
-                return
-            }
+			if ok == false {
+				return
+			}
 			io.WriteString(os.Stderr, "we got an signal, restart at "+TimeStr())
 			f, err := openFile(as.fn)
 			if err != nil {
@@ -42,12 +42,12 @@ func (as *AppendStruct) wait() {
 				time.Sleep(time.Second)
 				continue
 			}
-            as.lock.Lock()
-            if as.file != nil {
-                as.file.Close()
-            }
+			as.lock.Lock()
+			if as.file != nil {
+				as.file.Close()
+			}
 			as.file = f
-            as.lock.Unlock()
+			as.lock.Unlock()
 		case <-as.cClose:
 			signal.Reset(syscall.SIGUSR1)
 		}
@@ -65,21 +65,21 @@ func NewAppender(fn string) (*AppendStruct, error) {
 	as.fn = fn
 	as.cSig = make(chan os.Signal)
 	as.cClose = make(chan bool)
-    as.pid = os.Getpid()
-    signal.Notify(as.cSig, syscall.SIGUSR1)
+	as.pid = os.Getpid()
+	signal.Notify(as.cSig, syscall.SIGUSR1)
 	go as.wait()
 	return &as, nil
 }
 
 // Close release all resources it holds
 func (as *AppendStruct) Close() {
-    as.lock.Lock()
-    defer as.lock.Unlock()
+	as.lock.Lock()
+	defer as.lock.Unlock()
 	as.cClose <- true
-    signal.Stop(as.cSig)
+	signal.Stop(as.cSig)
 	close(as.cSig)
-    as.file.Close()
-    as.file = nil
+	as.file.Close()
+	as.file = nil
 	close(as.cClose)
 }
 
@@ -88,8 +88,8 @@ func (as *AppendStruct) Write(bt []byte) (int, error) {
 	if as.err != nil {
 		return 0, as.err
 	}
-    as.lock.Lock()
-    defer as.lock.Unlock()
+	as.lock.Lock()
+	defer as.lock.Unlock()
 	n, err := as.file.Write(bt)
 	if err != nil {
 		as.err = err

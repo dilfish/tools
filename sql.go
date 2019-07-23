@@ -22,7 +22,7 @@ func initDB(conf *DBConfig) (*sql.DB, error) {
 	dsn = dsn + "(" + conf.Host + ":"
 	dsn = dsn + strconv.Itoa(conf.Port) + ")"
 	dsn = dsn + "/" + conf.DBName
-    dsn = dsn + "?timeout=10s"
+	dsn = dsn + "?timeout=10s"
 	return sql.Open("mysql", dsn)
 }
 

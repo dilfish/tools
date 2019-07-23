@@ -11,16 +11,18 @@ import (
 	"io"
 	"io/ioutil"
 	"math/rand"
+	"net/http"
 	"os"
 	"strings"
 	"time"
-	"net/http"
 )
 
 // ErrBadFmt bad format in file
 var ErrBadFmt = errors.New("bad format")
+
 // ErrNoSuch not exists
 var ErrNoSuch = errors.New("no such")
+
 // ErrDupData indicate duplicate data
 var ErrDupData = errors.New("dup data")
 
@@ -61,28 +63,27 @@ func ReadFile(fn string) ([]byte, error) {
 	return ioutil.ReadAll(file)
 }
 
-
 // LineFunc read a file into lines
 type LineFunc func(line string) error
+
 // ReadLine read line and calls back lf
 func ReadLine(fn string, lf LineFunc) error {
-    file, err := os.Open(fn)
-    if err != nil {
-        return err
-    }
-    defer file.Close()
+	file, err := os.Open(fn)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
 	return readLine(file, lf, 0)
 }
 
-
 // GetLine get http content as file and calls lf on every line
 func GetLine(url string, lf LineFunc) error {
-    resp, err := http.Get(url)
-    if err != nil {
-        return err
-    }
-    defer resp.Body.Close()
-    return readLine(resp.Body, lf, 0)
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return readLine(resp.Body, lf, 0)
 }
 
 func readLine(reader io.Reader, lf LineFunc, split int) error {
@@ -156,7 +157,6 @@ func TimeStr() string {
 	return time.Now().Format("2006-01-02 15:04:05")
 }
 
-
 func dfsCallback(dir string, ret map[string]error, cb DFSCallback) {
 	file, err := os.Open(dir)
 	if err != nil {
@@ -173,18 +173,18 @@ func dfsCallback(dir string, ret map[string]error, cb DFSCallback) {
 		if f.IsDir() == false {
 			err = cb(dir + "/" + f.Name())
 			if err != nil {
-				ret[dir + "/" + f.Name()] = err
+				ret[dir+"/"+f.Name()] = err
 			}
 		} else {
-			dfsCallback(dir + "/" + f.Name(), ret, cb)
+			dfsCallback(dir+"/"+f.Name(), ret, cb)
 		}
 	}
 }
 
-
 // DFSIter find every file at a dir
 // and calls cb for every file
-type DFSCallback func (string) error
+type DFSCallback func(string) error
+
 func DFSIter(dir string, cb DFSCallback) map[string]error {
 	ret := make(map[string]error)
 	dfsCallback(dir, ret, cb)

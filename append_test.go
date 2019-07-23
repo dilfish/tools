@@ -4,9 +4,9 @@ package tools
 
 import (
 	"os"
+	"syscall"
 	"testing"
-    "syscall"
-    "time"
+	"time"
 )
 
 func TestNewAppender(t *testing.T) {
@@ -18,19 +18,19 @@ func TestNewAppender(t *testing.T) {
 	if err != nil {
 		t.Error("expect nil, got", err)
 	}
-    err = os.Rename("testdata/appender.log", "testdata/appender.log.backup")
-    if err != nil {
-        t.Error("rename error", err)
-    }
-    err = syscall.Kill(as.pid, syscall.SIGUSR1)
-    if err != nil {
-        t.Error("send kill error", err)
-    }
-    time.Sleep(time.Second)
-    _, err = as.Write([]byte("end\n"))
-    if err != nil {
-        t.Error("wriet again err", err)
-    }
+	err = os.Rename("testdata/appender.log", "testdata/appender.log.backup")
+	if err != nil {
+		t.Error("rename error", err)
+	}
+	err = syscall.Kill(as.pid, syscall.SIGUSR1)
+	if err != nil {
+		t.Error("send kill error", err)
+	}
+	time.Sleep(time.Second)
+	_, err = as.Write([]byte("end\n"))
+	if err != nil {
+		t.Error("wriet again err", err)
+	}
 	as.Close()
 	for i := 0; i < 2; i++ {
 		_, err = as.Write(nil)
@@ -43,6 +43,7 @@ func TestNewAppender(t *testing.T) {
 		t.Error("expect err, got", err)
 	}
 }
+
 /*
 
 func TestInitLog(t *testing.T) {
