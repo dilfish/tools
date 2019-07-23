@@ -123,5 +123,5 @@ func InitLog(fn, prefix string) *log.Logger {
 
 // SetLog normal log set
 func SetLog() {
-	log.Flags(log.Ldate | log.Ltime | log.Lshortfile)
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 }
