@@ -119,3 +119,9 @@ func InitLog(fn, prefix string) *log.Logger {
 	}
 	return log.New(as, prefix, log.LstdFlags|log.Lshortfile)
 }
+
+
+// SetLog normal log set
+func SetLog() {
+	log.Flags(log.Ldate | log.Ltime | log.Lshortfile)
+}
