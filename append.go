@@ -3,19 +3,14 @@
 package tools
 
 import (
-	"io"
 	"log"
 	"os"
-	"os/signal"
 	"sync"
-	"syscall"
-	"time"
 )
 
 // AppendStruct holds log file needed
 type AppendStruct struct {
 	file   *os.File
-	cSig   chan os.Signal
 	cClose chan bool
 	fn     string
 	err    error
@@ -27,31 +22,20 @@ func openFile(fn string) (*os.File, error) {
 	return os.OpenFile(fn, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 }
 
-func (as *AppendStruct) wait() {
-	for {
-		select {
-		case _, ok := <-as.cSig:
-			if ok == false {
-				return
-			}
-			io.WriteString(os.Stderr, "we got an signal, restart at "+TimeStr())
-			f, err := openFile(as.fn)
-			if err != nil {
-				as.err = err
-				log.Println("open file:", err)
-				time.Sleep(time.Second)
-				continue
-			}
-			as.lock.Lock()
-			if as.file != nil {
-				as.file.Close()
-			}
-			as.file = f
-			as.lock.Unlock()
-		case <-as.cClose:
-			signal.Reset(syscall.SIGUSR1)
-		}
+func (as *AppendStruct) Restart () error {
+	f, err := openFile(as.fn)
+	if err != nil {
+		as.err = err
+		log.Println("open file:", err)
+		return err
 	}
+	as.lock.Lock()
+	if as.file != nil {
+		as.file.Close()
+	}
+	as.file = f
+	as.lock.Unlock()
+	return nil
 }
 
 // NewAppender create an append only log file with debug info
@@ -63,11 +47,7 @@ func NewAppender(fn string) (*AppendStruct, error) {
 	}
 	as.file = f
 	as.fn = fn
-	as.cSig = make(chan os.Signal)
-	as.cClose = make(chan bool)
 	as.pid = os.Getpid()
-	signal.Notify(as.cSig, syscall.SIGUSR1)
-	go as.wait()
 	return &as, nil
 }
 
@@ -75,12 +55,8 @@ func NewAppender(fn string) (*AppendStruct, error) {
 func (as *AppendStruct) Close() {
 	as.lock.Lock()
 	defer as.lock.Unlock()
-	as.cClose <- true
-	signal.Stop(as.cSig)
-	close(as.cSig)
 	as.file.Close()
 	as.file = nil
-	close(as.cClose)
 }
 
 // Write api for file write

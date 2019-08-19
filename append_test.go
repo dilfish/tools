@@ -4,9 +4,7 @@ package tools
 
 import (
 	"os"
-	"syscall"
 	"testing"
-	"time"
 )
 
 func TestNewAppender(t *testing.T) {
@@ -22,11 +20,6 @@ func TestNewAppender(t *testing.T) {
 	if err != nil {
 		t.Error("rename error", err)
 	}
-	err = syscall.Kill(as.pid, syscall.SIGUSR1)
-	if err != nil {
-		t.Error("send kill error", err)
-	}
-	time.Sleep(time.Second)
 	_, err = as.Write([]byte("end\n"))
 	if err != nil {
 		t.Error("wriet again err", err)
@@ -43,28 +36,3 @@ func TestNewAppender(t *testing.T) {
 		t.Error("expect err, got", err)
 	}
 }
-
-/*
-
-func TestInitLog(t *testing.T) {
-	logger := InitLog("testdata/log.log", "test_")
-	if logger == nil {
-		t.Error("logger is nil")
-	}
-	logger = InitLog("testdata/log.log", "")
-	if logger == nil {
-		t.Error("logger is nil 2")
-	}
-	logger = InitLog("testdata/a/b", "")
-	if logger != nil {
-		t.Error("logger is not nil 3")
-	}
-}
-
-func TestDaemon(t *testing.T) {
-	Daemon()
-	if os.Stdin != nil {
-		t.Error("stdin is not nil", os.Stdin)
-	}
-}
-*/
