@@ -28,9 +28,6 @@ func initDB(conf *DBConfig) (*sql.DB, error) {
 
 // InitDB create new db object for mysql
 func InitDB(conf *DBConfig) (*sql.DB, error) {
-	db, err := initDB(conf)
-	if err != nil {
-		return nil, err
-	}
+	db, _ := initDB(conf)
 	return db, db.Ping()
 }

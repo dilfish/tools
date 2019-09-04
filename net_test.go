@@ -11,6 +11,14 @@ func TestIP2Num(t *testing.T) {
 	if n != 16843009 {
 		t.Error("expect 16843009, got", n)
 	}
+	n = IP2Num("a")
+	if n != 0 {
+		t.Error("expect 0 but got", n)
+	}
+	n = IP2Num("1::1")
+	if n != 0 {
+		t.Error("expect 0 but got", n)
+	}
 }
 
 func TestNum2IP(t *testing.T) {
@@ -25,6 +33,14 @@ func TestIPv62Num(t *testing.T) {
 	if inet != 281474976710656 || iint != 1 {
 		t.Error("expect 2**48 and 1, got", inet, iint)
 	}
+	a, b := IPv62Num("1.1.1.1")
+	if a != 0 || b != 0 {
+		t.Error("we expect 0,0, but got", a, b)
+	}
+	a, b = IPv62Num("a")
+	if a != 0 || b != 0 {
+		t.Error("we expect 0,0, but got", a, b)
+	}
 }
 
 func TestNum2IPv6(t *testing.T) {
@@ -38,5 +54,9 @@ func TestDIG(t *testing.T) {
 	_, err := DIG("baidu.com.", "114.114.114.114", "1.1.1.1")
 	if err != nil {
 		t.Error("expect nil, got", err)
+	}
+	_, err = DIG("baidu.com", "0", "1.1.1.1")
+	if err == nil {
+		t.Error("expect err but we got nil")
 	}
 }

@@ -89,10 +89,11 @@ func IPv62Num(ipstr string) (uint64, uint64) {
 	if ip == nil {
 		return 0, 0
 	}
-	ip = ip.To16()
-	if ip == nil {
+	fake := ip.To4()
+	if fake != nil {
 		return 0, 0
 	}
+	ip = ip.To16()
 	inet := uint64(0)
 	iint := uint64(0)
 	for i := uint(0); i < 8; i++ {
