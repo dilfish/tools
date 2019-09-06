@@ -176,7 +176,7 @@ type ReqLogDB struct {
 
 // MgoConfig is copyed
 type MgoConfig struct {
-	Addrs    []string `json:"Addrs"`
+	Addrs    []string `json:"addrs"`
 	Username string   `json:"user"`
 	Password string   `json:"pass"`
 	DB       string   `json:"db"`
@@ -217,4 +217,11 @@ func (db *ReqLogDB) InsertOne(ri *RequestInfo) error {
 		ri.Id = bson.NewObjectId().Hex()
 	}
 	return db.Coll.Insert(ri)
+}
+
+
+func (db *ReqLogDB) Close() {
+	if db != nil {
+		db.Session.Close()
+	}
 }

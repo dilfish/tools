@@ -40,10 +40,11 @@ type IPv6Counter struct {
 	current       string
 	stateCountMap map[string]uint64
 	sortCountList []StateCount
+	testMode bool
 }
 
 // NewIPv6Counter create service
-func NewIPv6Counter() *IPv6Counter {
+func NewIPv6Counter(testMode bool) *IPv6Counter {
 	tmp := []string{
 		"AD", "AE", "AF", "AG", "AI", "AL", "AM", "AO", "AR", "AS", "AT",
 		"AU", "AW", "AX", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH",
@@ -72,6 +73,10 @@ func NewIPv6Counter() *IPv6Counter {
 	for _, t := range tmp {
 		l := strings.ToLower(t)
 		ipv6c.stateList = append(ipv6c.stateList, l)
+	}
+	if testMode {
+		ipv6c.stateList = append([]string{}, "bl")
+		ipv6c.testMode = true
 	}
 	ipv6c.stateCountMap = make(map[string]uint64)
 	return &ipv6c
