@@ -50,7 +50,7 @@ func TestOpenReqLogDB(t *testing.T) {
 	var conf MgoConfig
 	err := ReadConfig("testdata/mongo.conf", &conf)
 	if err != nil {
-		t.Error("no such mgo config")
+		t.Error("no such mgo config", err)
 	}
 	db := OpenReqLogDB(conf)
 	if db == nil {

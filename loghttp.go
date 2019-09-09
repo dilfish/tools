@@ -181,16 +181,21 @@ type MgoConfig struct {
 	Password string   `json:"pass"`
 	DB       string   `json:"db"`
 	Coll     string   `json:"coll"`
+	TimeoutMs int `json:"timeoutMs"`
 }
 
 // OpenReqLogDB opens new db
 func OpenReqLogDB(conf MgoConfig) *ReqLogDB {
 	conf.Coll = "reqLog"
+	if conf.TimeoutMs == 0 {
+		conf.TimeoutMs = 200
+	}
 	info := mgo.DialInfo{
 		Addrs:    conf.Addrs,
 		Username: conf.Username,
 		Password: conf.Password,
 		Database: conf.DB,
+		Timeout: time.Millisecond * time.Duration(conf.TimeoutMs),
 	}
 	session, err := mgo.DialWithInfo(&info)
 	if err != nil {

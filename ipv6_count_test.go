@@ -5,7 +5,6 @@ package tools
 import (
 	"sort"
 	"testing"
-	"fmt"
 )
 
 func TestStateCountSlice(t *testing.T) {
@@ -24,7 +23,6 @@ func TestIPv6Counter(t *testing.T) {
 	if ipv6c == nil {
 		t.Error("bad args")
 	}
-	fmt.Println("start to renew, please wait")
 	err := ipv6c.Renew()
 	if err != nil {
 		t.Error("renew error:", err)
