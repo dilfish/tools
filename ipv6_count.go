@@ -129,10 +129,6 @@ func (ipv6c *IPv6Counter) sortCounter() {
 
 // Renew get data from website
 func (ipv6c *IPv6Counter) Renew() error {
-	if ipv6c.testMode {
-		ipv6c.sortCountList = []StateCount{{Name:"bl",Count:1}}
-		return nil
-	}
 	ipv6c.current = ""
 	ipv6c.sortCountList = nil
 	ipv6c.stateCountMap = make(map[string]uint64)

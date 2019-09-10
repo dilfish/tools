@@ -122,3 +122,11 @@ func TestDFSIter(t *testing.T) {
 		t.Error("we have ret:", ret)
 	}
 }
+
+
+func TestTimeStr(t *testing.T) {
+	ts := TimeStr()
+	if ts == "" {
+		t.Error("bad ts")
+	}
+}

@@ -25,4 +25,9 @@ func TestClientApi(t *testing.T) {
 	client := New(mock.URL, 1)
 	_, err := client.Get("/abc")
 	assert.Nil(t, err)
+	client.SetBaseURL("a")
+	a := client.GetBaseURL()
+	if a != "a" {
+		t.Error("get base url error", a)
+	}
 }

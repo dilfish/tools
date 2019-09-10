@@ -24,6 +24,10 @@ func TestNewAppender(t *testing.T) {
 	if err != nil {
 		t.Error("wriet again err", err)
 	}
+	err = as.Restart()
+	if err != nil {
+		t.Error("restart error", err)
+	}
 	as.Close()
 	for i := 0; i < 2; i++ {
 		_, err = as.Write(nil)
@@ -35,4 +39,6 @@ func TestNewAppender(t *testing.T) {
 	if err == nil {
 		t.Error("expect err, got", err)
 	}
+	SetLog()
+	Daemon()
 }
