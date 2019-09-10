@@ -64,3 +64,31 @@ func TestOpenReqLogDB(t *testing.T) {
 		t.Error("fake db open good:", db)
 	}
 }
+
+
+func TestRequestLogger(t *testing.T) {
+	var conf MgoConfig
+	err := ReadConfig("testdata/mongo.conf", &conf)
+	if err != nil {
+		t.Error("read config error", err)
+	}
+	s := NewServeRequestLogger(conf)
+	if s == nil {
+		t.Error("new serve request error", err)
+	}
+	now := time.Now()
+	var r RequestInfo
+	r.Name = "test"
+	r.Method = "POST"
+	r.Path = "/do"
+	r.ClientIP = "1.1.1.1"
+	r.Time = now
+	err = s.OneRequest(&r)
+	if err != nil {
+		t.Error("one request error", err)
+	}
+	_, err = s.GetStat(now.Add(-time.Second), now.Add(time.Second))
+	if err != nil {
+		t.Error("get state error:", err)
+	}
+}
