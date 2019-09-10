@@ -81,10 +81,7 @@ func (hl *RequestLogger) PostOne(req *http.Request) error {
 
 // DoJsonPost is a general api for http post
 func DoJsonPost(uri string, args, ret interface{}) error {
-	bt, err := json.Marshal(args)
-	if err != nil {
-		return err
-	}
+	bt, _ := json.Marshal(args)
 	buf := bytes.NewBuffer(bt)
 	resp, err := http.Post(uri, "application/json", buf)
 	if err != nil {
@@ -187,9 +184,6 @@ type MgoConfig struct {
 // OpenReqLogDB opens new db
 func OpenReqLogDB(conf MgoConfig) *ReqLogDB {
 	conf.Coll = "reqLog"
-	if conf.TimeoutMs == 0 {
-		conf.TimeoutMs = 200
-	}
 	info := mgo.DialInfo{
 		Addrs:    conf.Addrs,
 		Username: conf.Username,

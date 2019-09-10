@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"time"
 	"net/url"
+	"net/http/httptest"
+	"encoding/json"
 )
 
 
@@ -42,6 +44,39 @@ func TestNewRequestLogger(t *testing.T) {
 	rl := NewRequestLogger(post, get)
 	if rl.PostUrl != post || rl.GetUrl != get {
 		t.Error("bad get/post", rl, get, post)
+	}
+	var ei ErrInfo
+	ts := httptest.NewServer(http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+		bt, err := json.Marshal(ei)
+		if err != nil {
+			t.Error("marshal error:", err)
+		}
+		w.Write(bt)
+	}))
+	defer ts.Close()
+	rl.PostUrl = ts.URL + "/post"
+	req, err := http.NewRequest("POST", ts.URL + "/post", nil)
+	if err != nil {
+		t.Error("new request error:", err)
+	}
+	err = rl.PostOne(req)
+	if err != nil {
+		t.Error("post one error:", err)
+	}
+	rl.GetUrl = ts.URL + "/get"
+	_, err = rl.GetStat(time.Now().Add(-time.Second), time.Now().Add(time.Second))
+	if err != nil {
+		t.Error("get stat", err)
+	}
+	rl.PostUrl = "/post"
+	rl.GetUrl = "/get"
+	err = rl.PostOne(req)
+	if err == nil {
+		t.Error("bad post one", err)
+	}
+	_, err = rl.GetStat(time.Now().Add(-time.Second), time.Now().Add(time.Second))
+	if err == nil {
+		t.Error("bad get one", err)
 	}
 }
 
