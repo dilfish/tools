@@ -36,10 +36,7 @@ func (c *Cli) GetBaseURL() string {
 
 // Get do a get for client
 func (c *Cli) Get(u string) ([]byte, error) {
-	req, err := http.NewRequest("GET", c.baseURL+u, nil)
-	if err != nil {
-		return nil, err
-	}
+	req, _ := http.NewRequest("GET", c.baseURL+u, nil)
 	resp, err := c.Do(req)
 	if err != nil {
 		return nil, err

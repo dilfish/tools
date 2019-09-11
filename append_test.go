@@ -7,7 +7,24 @@ import (
 	"testing"
 )
 
+
+func TestInitLog(t *testing.T) {
+	logger := InitLog("testdata/initlog.log", "")
+	if logger == nil {
+		t.Error("expect logger, got nil")
+	}
+	logger = InitLog("", "")
+	if logger != nil {
+		t.Error("expect get nil, got", logger)
+	}
+}
+
+
 func TestNewAppender(t *testing.T) {
+	_, err := NewAppender("")
+	if err == nil {
+		t.Error("expect err got nil")
+	}
 	as, err := NewAppender("testdata/appender.log")
 	if err != nil {
 		t.Error("expect nil, got", err)

@@ -41,12 +41,11 @@ func (as *AppendStruct) Restart () error {
 // NewAppender create an append only log file with debug info
 func NewAppender(fn string) (*AppendStruct, error) {
 	var as AppendStruct
-	f, err := openFile(fn)
+	as.fn = fn
+	err := as.Restart()
 	if err != nil {
 		return nil, err
 	}
-	as.file = f
-	as.fn = fn
 	as.pid = os.Getpid()
 	return &as, nil
 }
