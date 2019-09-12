@@ -52,10 +52,6 @@ func TestNewAppender(t *testing.T) {
 			t.Error("expect not nil, got", err)
 		}
 	}
-	_, err = NewAppender("testdata/a/appender.log")
-	if err == nil {
-		t.Error("expect err, got", err)
-	}
 	SetLog()
 	Daemon()
 }
