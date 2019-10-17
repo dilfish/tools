@@ -9,6 +9,14 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"sort"
+	"encoding/base64"
+	"strings"
+	"crypto/hmac"
+	"crypto/sha1"
+	"time"
+	"math/rand"
+	"bytes"
 )
 
 // AliyunClient defines a client
@@ -40,7 +48,7 @@ func (a ByKey) Less(i, j int) bool { return a[i].Key < a[j].Key }
 func generateSignature(method string, params map[string]string, accessKeySecret string) (signature string) {
 	pairs := make([]AliKeyValuePair, 0)
 	for k, v := range params {
-		pairs = append(pairs, KeyValuePair{
+		pairs = append(pairs, AliKeyValuePair{
 			Key:   k,
 			Value: v,
 		})
@@ -100,7 +108,7 @@ func (ali *AliyunClient) ModifyRecord(subDomain, domain, value, recordId string)
 	ret["Value"] = value
 	ret["RecordId"] = recordId
 
-	body := []byte(generateUrlParam(http.MethodPost, ret, KeySecret))
+	body := []byte(generateUrlParam(http.MethodPost, ret, ali.KeySecret))
 	ct := "application/x-www-form-urlencoded"
 	buf:= bytes.NewBuffer(body)
 	url := "https://alidns.aliyuncs.com"
@@ -113,12 +121,12 @@ func (ali *AliyunClient) ModifyRecord(subDomain, domain, value, recordId string)
 	if err != nil {
 		return err
 	}
-	var ret AliResponse
-	err = json.Unmarshal(bt, &ret)
+	var aliResp AliResponse
+	err = json.Unmarshal(bt, &aliResp)
 	if err != nil {
 		return err
 	}
-	if ret.RecordId == "" {
+	if aliResp.RecordId == "" {
 		return errors.New(string(bt))
 	}
 	return nil
