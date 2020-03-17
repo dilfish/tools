@@ -95,6 +95,11 @@ func (ce *CallbackError) Error() string {
 	return fmt.Sprintf("original: %v, lineNum: %d\n", ce.Original, ce.LineNum)
 }
 
+
+func (ce *CallbackError) Unwrap() error {
+	return ce.Original
+}
+
 func readLine(reader io.Reader, lf LineFunc, split int) error {
 	rd := bufio.NewReader(reader)
 	ln := 0
