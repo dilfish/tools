@@ -86,8 +86,18 @@ func GetLine(url string, lf LineFunc) error {
 	return readLine(resp.Body, lf, 0)
 }
 
+type CallbackError struct {
+	Original error
+	LineNum int
+}
+
+func (ce *CallbackError) Error() string {
+	return fmt.Sprintf("original: %v, lineNum: %d\n", ce.Original, ce.LineNum)
+}
+
 func readLine(reader io.Reader, lf LineFunc, split int) error {
 	rd := bufio.NewReader(reader)
+	ln := 0
 	for {
 		line, err := rd.ReadString('\n')
 		if err != nil && err != io.EOF {
@@ -108,8 +118,12 @@ func readLine(reader io.Reader, lf LineFunc, split int) error {
 		}
 		err = lf(line)
 		if err != nil {
-			return err
+			var ce CallbackError
+			ce.Original = err
+			ce.LineNum = ln
+			return &ce
 		}
+		ln = ln + 1
 	}
 	return nil
 }
