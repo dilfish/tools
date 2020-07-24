@@ -12,6 +12,7 @@ import (
 	"time"
 )
 
+// ErrPostOne: you could not post one
 var ErrPostOne = errors.New("post one error")
 var ErrGetStat = errors.New("get stat error")
 
