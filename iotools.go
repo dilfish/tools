@@ -103,8 +103,10 @@ func (ce *CallbackError) Unwrap() error {
 func readLine(reader io.Reader, lf LineFunc, split int) error {
 	rd := bufio.NewReader(reader)
 	ln := 0
+	var line string
+	var err error
 	for {
-		line, err := rd.ReadString('\n')
+		line, err = rd.ReadString('\n')
 		if err != nil && err != io.EOF {
 			return err
 		}
@@ -130,7 +132,16 @@ func readLine(reader io.Reader, lf LineFunc, split int) error {
 		}
 		ln = ln + 1
 	}
-	return nil
+	if line != "" {
+		err = lf(line)
+		if err != nil {
+			var ce CallbackError
+			ce.Original = err
+			ce.LineNum = ln
+			return &ce
+		}
+	}
+	return err
 }
 
 // FileMd5 calc file's md5
