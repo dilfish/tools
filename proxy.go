@@ -2,7 +2,7 @@
 // tcp proxy
 // 2020
 
-package main
+package tools
 
 import (
 	"errors"
@@ -31,10 +31,12 @@ const (
 
 // Stat gets data every 2 minutes
 type Stat struct {
-	Inb  int64
-	Outb int64
-	Ts   time.Time
-	Lock sync.Mutex
+	TotalInb  int64
+	TotalOutb int64
+	Inb       int64
+	Outb      int64
+	Ts        time.Time
+	Lock      sync.Mutex
 }
 
 // TcpProxy stores ip and port information
@@ -82,6 +84,7 @@ func (p *TcpProxy) Run() error {
 		log.Println("listen tcp error:", err)
 		return err
 	}
+	defer ls.Close()
 	go p.StatCounter()
 	for {
 		c, err := ls.AcceptTCP()
@@ -95,8 +98,6 @@ func (p *TcpProxy) Run() error {
 
 // Proxy starts a server and client
 func (p *TcpProxy) Proxy(c *net.TCPConn) {
-	defer c.Close()
-	// log.Println("we get a conn from", c.RemoteAddr())
 	var raddr net.TCPAddr
 	raddr.IP = p.RemoteIP
 	raddr.Port = p.RemotePort
@@ -110,19 +111,14 @@ func (p *TcpProxy) Proxy(c *net.TCPConn) {
 }
 
 // LoopCopy copies data until error occur
-func (p *TcpProxy) LoopCopy(dst io.Writer, src io.Reader, statType StatType) {
-	en := 0
+func (p *TcpProxy) LoopCopy(dst io.WriteCloser, src io.ReadCloser, statType StatType) {
+	defer dst.Close()
 	for {
 		n, err := io.Copy(dst, src)
 		p.AddStat(n, statType)
 		if err != nil {
-			log.Println("io.Copy is", n, err)
-		}
-		if err != nil {
-			en = en + 1
-			if en > 2 {
-				return
-			}
+			log.Println("io.Copy error, we read:", n, err)
+			return
 		}
 	}
 }
@@ -144,13 +140,16 @@ func (p *TcpProxy) AddStat(n int64, statType StatType) {
 // ClearOut clear all statistics and print them
 func (stat *Stat) ClearOut() {
 	var inb, outb int64
+	var tib, tob int64
 	stat.Lock.Lock()
 	inb = stat.Inb
 	outb = stat.Outb
+	tib = stat.TotalInb
+	tob = stat.TotalOutb
 	stat.Inb = 0
 	stat.Outb = 0
 	stat.Lock.Unlock()
-	log.Println("current stat, in:", inb, " and out:", outb)
+	log.Println("current stat, in:", inb, " and out:", outb, ", total inb:", tib, ", total outb:", tob)
 }
 
 // Add add n to current stat
@@ -159,7 +158,9 @@ func (stat *Stat) Add(n int64, statType StatType) {
 	defer stat.Lock.Unlock()
 	if statType == StatIn {
 		stat.Inb = stat.Inb + n
+		stat.TotalInb = stat.TotalInb + n
 	} else {
 		stat.Outb = stat.Outb + n
+		stat.TotalOutb = stat.TotalOutb + n
 	}
 }
