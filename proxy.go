@@ -1,8 +1,8 @@
 // sean at shanghai
-// 2020
 // tcp proxy
+// 2020
 
-package tools
+package main
 
 import (
 	"errors"
@@ -58,15 +58,19 @@ func NewProxy(localP, dstP int, localIP, dstIP string) (*TcpProxy, error) {
 	}
 	var p TcpProxy
 	p.Stat = &Stat{}
+	p.LocalIP = lIP
+	p.RemoteIP = dIP
+	p.LocalPort = localP
+	p.RemotePort = dstP
 	return &p, nil
 }
 
 // GetNetClass judges we using tcp4 or tcp6
 func GetNetClass(ip net.IP) string {
-	if ip.To16() != nil {
-		return "tcp6"
+	if ip.To4() != nil {
+		return "tcp4"
 	}
-	return "tcp4"
+	return "tcp6"
 }
 
 // Run runs a tcp proxy
