@@ -104,3 +104,58 @@ func IPv62Num(ipstr string) (uint64, uint64) {
 	}
 	return inet, iint
 }
+
+
+// LoopCopy copies from src to dst until 2 errors occur
+func LoopCopy(dst io.Writer, src io.Reader) {
+	en := 0
+	for {
+		n, err := io.Copy(dst, src)
+		if err != nil {
+			log.Println("io.Copy is", n, err)
+		}
+		if err != nil {
+			en = en + 1
+			if en > 2 {
+				return
+			}
+		}
+	}
+}
+
+
+// Proxy set up a tcp proxy
+func Proxy(c *net.TCPConn, dstP int, dstIP net.IP) {
+	defer c.Close()
+	// log.Println("we get a conn from", c.RemoteAddr())
+	var raddr net.TCPAddr
+	raddr.IP = dstIP
+	raddr.Port = dstP
+	r, err := net.DialTCP("tcp4", nil, &raddr)
+	if err != nil {
+		log.Println("dial remote error:", err)
+		return
+	}
+	go LoopCopy(c, r)
+	LoopCopy(r, c)
+}
+
+
+// Run runs a tcp proxy
+func Run(localP int, localIP net.IP, dstP int, dstIP net.IP) error {
+	var addr net.TCPAddr
+	addr.Port = localP
+	ls, err := net.ListenTCP("tcp4", &addr)
+	if err != nil {
+		log.Println("listen tcp v4 error:", err)
+		return err
+	}
+	for {
+		c, err := ls.AcceptTCP()
+		if err != nil {
+			log.Println("accept error", err)
+			continue
+		}
+		go Proxy(c, dstP, dstIP)
+	}
+}
