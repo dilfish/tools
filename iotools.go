@@ -17,6 +17,17 @@ import (
 	"time"
 )
 
+
+const (
+	// time format of year month day and hour minute seconds
+	TimeFormatYMDHMS = "2006-01-02T15:04:05"
+	// time format of year month day
+	TimeFormatYMD = "2006-01-02"
+	// time format with time zone
+	TimeFormatYMDHMSZ = "2006-01-02T15:04:05 -0700"
+
+)
+
 // ErrBadFmt bad format in file
 var ErrBadFmt = errors.New("bad format")
 
