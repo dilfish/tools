@@ -6,6 +6,7 @@ go:
 
 before_install:
   - go get -t -v ./...
+  - mysql -e 'CREATE DATABASE test;'
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
@@ -16,6 +17,3 @@ script:
 services:
   - mysql
   - mongodb
-
-before_install:
-  - mysql -e 'CREATE DATABASE test;'
