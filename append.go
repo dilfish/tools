@@ -22,11 +22,11 @@ func openFile(fn string) (*os.File, error) {
 	return os.OpenFile(fn, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 }
 
-func (as *AppendStruct) Restart () error {
+func (as *AppendStruct) Restart() error {
 	f, err := openFile(as.fn)
 	if err != nil {
 		as.err = err
-		log.Println("open file:", err)
+		log.Println("open file:", as.fn, err)
 		return err
 	}
 	as.lock.Lock()
@@ -94,7 +94,6 @@ func InitLog(fn, prefix string) *log.Logger {
 	}
 	return log.New(as, prefix, log.LstdFlags|log.Lshortfile)
 }
-
 
 // SetLog normal log set
 func SetLog() {

@@ -53,7 +53,7 @@ const Tail = `</p>
 
 `
 
-type Handler struct {
+type FakeHandler struct {
 	FileHandler http.Handler
 }
 
@@ -96,7 +96,7 @@ func (f *FakeResponse) Write(b []byte) (int, error) {
 	return f.orig.Write(b)
 }
 
-func (h *Handler) IsUsingFakeResponse(uri string) bool {
+func (h *FakeHandler) IsUsingFakeResponse(uri string) bool {
 	if strings.HasSuffix(uri, ".go") {
 		return true
 	}
@@ -115,7 +115,7 @@ func PrintMapValue(msg string, str []string) string {
 	return v
 }
 
-func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *FakeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Println("request is", r.Method, r.RequestURI)
 	cip := PrintMapValue("Cf-Connecting-Ip", r.Header["Cf-Connecting-Ip"])
 	PrintMapValue("Cf-Request-Id", r.Header["Cf-Request-Id"])

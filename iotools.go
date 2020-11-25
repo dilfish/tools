@@ -10,13 +10,13 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 )
-
 
 const (
 	// time format of year month day and hour minute seconds
@@ -25,7 +25,6 @@ const (
 	TimeFormatYMD = "2006-01-02"
 	// time format with time zone
 	TimeFormatYMDHMSZ = "2006-01-02T15:04:05 -0700"
-
 )
 
 // ErrBadFmt bad format in file
@@ -81,6 +80,7 @@ type LineFunc func(line string) error
 func ReadLine(fn string, lf LineFunc) error {
 	file, err := os.Open(fn)
 	if err != nil {
+		log.Println("open file error:", fn, err)
 		return err
 	}
 	defer file.Close()
@@ -99,13 +99,12 @@ func GetLine(url string, lf LineFunc) error {
 
 type CallbackError struct {
 	Original error
-	LineNum int
+	LineNum  int
 }
 
 func (ce *CallbackError) Error() string {
 	return fmt.Sprintf("original: %v, lineNum: %d\n", ce.Original, ce.LineNum)
 }
-
 
 func (ce *CallbackError) Unwrap() error {
 	return ce.Original
@@ -122,6 +121,7 @@ func readLine(reader io.Reader, lf LineFunc, split int) error {
 			return err
 		}
 		if err == io.EOF {
+			err = nil
 			break
 		}
 		if line == "" {

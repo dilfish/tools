@@ -7,8 +7,9 @@ import (
 	"testing"
 )
 
-
 func TestInitLog(t *testing.T) {
+	t.Log("enter TestInitLog")
+	defer t.Log("leave TestInitLog")
 	logger := InitLog("testdata/initlog.log", "")
 	if logger == nil {
 		t.Error("expect logger, got nil")
@@ -19,8 +20,9 @@ func TestInitLog(t *testing.T) {
 	}
 }
 
-
 func TestNewAppender(t *testing.T) {
+	t.Log("enter TestNewAppender")
+	defer t.Log("leave TestNewAppender")
 	_, err := NewAppender("")
 	if err == nil {
 		t.Error("expect err got nil")
