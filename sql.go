@@ -15,6 +15,7 @@ type DBConfig struct {
 	Host   string `json:"host"`
 	Port   int    `json:"port"`
 	DBName string `json:"db"`
+	Ext    string `json:"ext"`
 }
 
 func initDB(conf *DBConfig) (*sql.DB, error) {
@@ -23,6 +24,9 @@ func initDB(conf *DBConfig) (*sql.DB, error) {
 	dsn = dsn + strconv.Itoa(conf.Port) + ")"
 	dsn = dsn + "/" + conf.DBName
 	dsn = dsn + "?timeout=10s"
+	if conf.Ext != "" {
+		dsn = dsn + "&" + conf.Ext
+	}
 	return sql.Open("mysql", dsn)
 }
 
