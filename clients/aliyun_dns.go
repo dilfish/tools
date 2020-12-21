@@ -3,31 +3,31 @@
 package clients
 
 import (
+	"bytes"
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"sort"
-	"encoding/base64"
 	"strings"
-	"crypto/hmac"
-	"crypto/sha1"
 	"time"
-	"math/rand"
-	"bytes"
 )
 
 // AliyunClient defines a client
 type AliyunClient struct {
-	KeyId string
+	KeyId     string
 	KeySecret string
 }
 
 // NewAliyunClient returns a new client
 func NewAliyunClient(id, secret string) *AliyunClient {
-	return &AliyunClient{KeyId:id, KeySecret: secret}
+	return &AliyunClient{KeyId: id, KeySecret: secret}
 }
 
 // AliKeyValuePair to sort arguments
@@ -36,14 +36,12 @@ type AliKeyValuePair struct {
 	Value string
 }
 
-
 // ByKey implements sort.Sort
 type ByKey []AliKeyValuePair
 
 func (a ByKey) Len() int           { return len(a) }
 func (a ByKey) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ByKey) Less(i, j int) bool { return a[i].Key < a[j].Key }
-
 
 func generateSignature(method string, params map[string]string, accessKeySecret string) (signature string) {
 	pairs := make([]AliKeyValuePair, 0)
@@ -64,7 +62,7 @@ func generateSignature(method string, params map[string]string, accessKeySecret 
 	encodedUrlParams := url.QueryEscape(urlParams)
 	StringToSign := method + "&" + url.QueryEscape("/") + "&" + encodedUrlParams
 	// fmt.Println("string to sign is", StringToSign)
-	hmacObj := hmac.New(sha1.New, []byte(accessKeySecret + "&"))
+	hmacObj := hmac.New(sha1.New, []byte(accessKeySecret+"&"))
 	hmacObj.Write([]byte(StringToSign))
 	signature = base64.StdEncoding.EncodeToString(hmacObj.Sum(nil))
 	// fmt.Println("signature is", signature)
@@ -82,13 +80,12 @@ func generateUrlParam(method string, params map[string]string, accessKeySecret s
 	return
 }
 
-
 type AliResponse struct {
 	RequestId string `json:"RequestId"` // always return
-	RecordId string `json:"RecordId"` // returned when ok
-	HostId string `json:"HostId"` // returned when error
-	Code string `json:"Code"` // returned when error
-	Message string `json:"Message"` // returned when error
+	RecordId  string `json:"RecordId"`  // returned when ok
+	HostId    string `json:"HostId"`    // returned when error
+	Code      string `json:"Code"`      // returned when error
+	Message   string `json:"Message"`   // returned when error
 }
 
 func (ali *AliyunClient) ModifyRecord(subDomain, domain, value, recordId string) error {
@@ -110,7 +107,7 @@ func (ali *AliyunClient) ModifyRecord(subDomain, domain, value, recordId string)
 
 	body := []byte(generateUrlParam(http.MethodPost, ret, ali.KeySecret))
 	ct := "application/x-www-form-urlencoded"
-	buf:= bytes.NewBuffer(body)
+	buf := bytes.NewBuffer(body)
 	url := "https://alidns.aliyuncs.com"
 	resp, err := http.Post(url, ct, buf)
 	if err != nil {

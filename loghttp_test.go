@@ -1,14 +1,13 @@
 package tools
 
 import (
-	"testing"
-	"net/http"
-	"time"
-	"net/url"
-	"net/http/httptest"
 	"encoding/json"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"testing"
+	"time"
 )
-
 
 func TestRequestToInfo(t *testing.T) {
 	var req http.Request
@@ -37,7 +36,6 @@ func TestRequestToInfo(t *testing.T) {
 	}
 }
 
-
 func TestNewRequestLogger(t *testing.T) {
 	get := "/get"
 	post := "/post"
@@ -46,7 +44,7 @@ func TestNewRequestLogger(t *testing.T) {
 		t.Error("bad get/post", rl, get, post)
 	}
 	var ei ErrInfo
-	ts := httptest.NewServer(http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		bt, err := json.Marshal(ei)
 		if err != nil {
 			t.Error("marshal error:", err)
@@ -55,7 +53,7 @@ func TestNewRequestLogger(t *testing.T) {
 	}))
 	defer ts.Close()
 	rl.PostUrl = ts.URL + "/post"
-	req, err := http.NewRequest("POST", ts.URL + "/post", nil)
+	req, err := http.NewRequest("POST", ts.URL+"/post", nil)
 	if err != nil {
 		t.Error("new request error:", err)
 	}
@@ -80,7 +78,6 @@ func TestNewRequestLogger(t *testing.T) {
 	}
 }
 
-
 func TestOpenReqLogDB(t *testing.T) {
 	var conf MgoConfig
 	err := ReadConfig("testdata/mongo.conf", &conf)
@@ -99,7 +96,6 @@ func TestOpenReqLogDB(t *testing.T) {
 		t.Error("fake db open good:", db)
 	}
 }
-
 
 func TestRequestLogger(t *testing.T) {
 	var conf MgoConfig

@@ -4,8 +4,9 @@ package tools
 
 import (
 	"fmt"
-	"github.com/miekg/dns"
 	"net"
+
+	"github.com/miekg/dns"
 )
 
 // DIG like dig
@@ -104,4 +105,3 @@ func IPv62Num(ipstr string) (uint64, uint64) {
 	}
 	return inet, iint
 }
-

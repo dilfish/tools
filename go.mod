@@ -6,7 +6,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/stretchr/testify v1.4.0
 	google.golang.org/appengine v1.6.6 // indirect
-	gopkg.in/mailgun/mailgun-go.v1 v1.1.1
+	gopkg.in/mailgun/mailgun-go.v1 v1.1.1 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22
 )
 

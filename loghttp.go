@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
+
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // ErrPostOne: you could not post one
@@ -174,12 +175,12 @@ type ReqLogDB struct {
 
 // MgoConfig is copyed
 type MgoConfig struct {
-	Addrs    []string `json:"addrs"`
-	Username string   `json:"user"`
-	Password string   `json:"pass"`
-	DB       string   `json:"db"`
-	Coll     string   `json:"coll"`
-	TimeoutMs int `json:"timeoutMs"`
+	Addrs     []string `json:"addrs"`
+	Username  string   `json:"user"`
+	Password  string   `json:"pass"`
+	DB        string   `json:"db"`
+	Coll      string   `json:"coll"`
+	TimeoutMs int      `json:"timeoutMs"`
 }
 
 // OpenReqLogDB opens new db
@@ -190,7 +191,7 @@ func OpenReqLogDB(conf MgoConfig) *ReqLogDB {
 		Username: conf.Username,
 		Password: conf.Password,
 		Database: conf.DB,
-		Timeout: time.Millisecond * time.Duration(conf.TimeoutMs),
+		Timeout:  time.Millisecond * time.Duration(conf.TimeoutMs),
 	}
 	session, err := mgo.DialWithInfo(&info)
 	if err != nil {
@@ -218,7 +219,6 @@ func (db *ReqLogDB) InsertOne(ri *RequestInfo) error {
 	}
 	return db.Coll.Insert(ri)
 }
-
 
 func (db *ReqLogDB) Close() {
 	if db != nil {

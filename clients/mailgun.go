@@ -3,13 +3,15 @@
 package clients
 
 import (
-	"fmt"
-	"gopkg.in/mailgun/mailgun-go.v1"
 	"errors"
+	"fmt"
+
+	"gopkg.in/mailgun/mailgun-go.v1"
 )
 
 // ApiKey of mailgun
 var ApiKey = ""
+
 // PubKey of mailgun
 var PubKey = ""
 
