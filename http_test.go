@@ -3,12 +3,11 @@
 package tools
 
 import (
-	"testing"
-	"net/http"
 	"encoding/json"
+	"net/http"
 	"net/http/httptest"
+	"testing"
 )
-
 
 func TestNewLogMux(t *testing.T) {
 	lm := NewLogMux("", "")
@@ -19,7 +18,7 @@ func TestNewLogMux(t *testing.T) {
 	if lm == nil {
 		t.Error("new log mux error")
 	}
-	lm.POST("/post", func (w http.ResponseWriter, r *http.Request) {
+	lm.POST("/post", func(w http.ResponseWriter, r *http.Request) {
 		h := w.Header()
 		w.WriteHeader(203)
 		bt, _ := json.Marshal(h)

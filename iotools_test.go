@@ -123,7 +123,6 @@ func TestDFSIter(t *testing.T) {
 	}
 }
 
-
 func TestTimeStr(t *testing.T) {
 	ts := TimeStr()
 	if ts == "" {

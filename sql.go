@@ -4,11 +4,9 @@ package tools
 
 import (
 	"database/sql"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
-
-	// Just import mysql, no need to specify it
-	"strconv"
 )
 
 // DBConfig for mysql

@@ -25,5 +25,4 @@ _testmain.go
 
 coverage.out
 log.log
-testdata/appender.log.backup
-testdata/http.log
+testdata/*

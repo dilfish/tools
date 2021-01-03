@@ -17,7 +17,6 @@ func TestStateCountSlice(t *testing.T) {
 	}
 }
 
-
 func TestIPv6Counter(t *testing.T) {
 	ipv6c := NewIPv6Counter(true)
 	if ipv6c == nil {

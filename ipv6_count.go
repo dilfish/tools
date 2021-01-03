@@ -40,7 +40,7 @@ type IPv6Counter struct {
 	current       string
 	stateCountMap map[string]uint64
 	sortCountList []StateCount
-	testMode bool
+	testMode      bool
 }
 
 // NewIPv6Counter create service
