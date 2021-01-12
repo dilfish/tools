@@ -5,19 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="560e448e-0382-401b-9cfb-479650867051" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/client_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/client_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clients/get_word.go" beforeDir="false" afterPath="$PROJECT_DIR$/clients/get_word.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/http_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/http_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/iotools_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/iotools_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ipv6_count.go" beforeDir="false" afterPath="$PROJECT_DIR$/ipv6_count.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ipv6_count_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/ipv6_count_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/server_test.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sql.go" beforeDir="false" afterPath="$PROJECT_DIR$/sql.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cache/api.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cache/redis.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
   </component>
   <component name="GOROOT" url="file:///usr/local/go" />
   <component name="Git.Settings">
@@ -34,6 +38,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="NewWatcherDialog.advanced.open" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
@@ -49,6 +54,17 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
