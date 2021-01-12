@@ -26,7 +26,11 @@ func (r *RedisService) Set (key, val string) error {
 	return r.Cli.Set(r.Ctx, key, val, 0).Err()
 }
 
-func (r *RedisService) IsNil (err error) bool {
+func (r *RedisService) IsNil (e interface{}) bool {
+	err, ok := e.(error)
+	if !ok {
+		return false
+	}
 	if err == redis.Nil {
 		return true
 	}
