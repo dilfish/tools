@@ -26,8 +26,8 @@ func SendMail(to, title, content string) error {
 	if ApiKey == "" || PubKey == "" {
 		return errors.New("You need to call InitMail first")
 	}
-	from := "mc@mg.libsm.com"
-	domain := "mg.libsm.com"
+	from := "mc@mg.dev.ug"
+	domain := "mg.dev.ug"
 	mg := mailgun.NewMailgun(domain, ApiKey, PubKey)
 	m := mailgun.NewMessage(
 		from, title,

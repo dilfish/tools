@@ -5,7 +5,7 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/lucas-clemente/quic-go v0.19.3
 	github.com/marten-seemann/qpack v0.2.1
-	github.com/miekg/dns v1.1.16
+	github.com/miekg/dns v1.1.38
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/stretchr/testify v1.6.1
 	google.golang.org/appengine v1.6.6 // indirect

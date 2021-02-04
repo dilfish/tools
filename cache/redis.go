@@ -22,11 +22,11 @@ func (r *RedisService) Get(key string) (string, error) {
 	return val, err
 }
 
-func (r *RedisService) Set (key, val string) error {
+func (r *RedisService) Set(key, val string) error {
 	return r.Cli.Set(r.Ctx, key, val, 0).Err()
 }
 
-func (r *RedisService) IsNil (e interface{}) bool {
+func (r *RedisService) IsNil(e interface{}) bool {
 	err, ok := e.(error)
 	if !ok {
 		return false
