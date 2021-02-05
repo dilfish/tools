@@ -1,7 +1,7 @@
 // Sean at shanghai
 // 2020.07
 
-package tools
+package net
 
 import (
 	"log"

@@ -1,6 +1,6 @@
 // SeanZH shanghai 2019
 
-package tools
+package logh
 
 import (
 	"io/ioutil"

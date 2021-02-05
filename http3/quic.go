@@ -1,4 +1,4 @@
-package tools
+package http3
 
 import (
 	"log"
@@ -7,10 +7,8 @@ import (
 	"github.com/lucas-clemente/quic-go/http3"
 )
 
-
 var CertPath string
 var KeyPath string
-
 
 type Handler struct{}
 

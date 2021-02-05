@@ -1,6 +1,6 @@
 // Copyright 2018 Sean.ZH
 
-package tools
+package net
 
 import (
 	"fmt"
@@ -8,6 +8,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"github.com/dilfish/tools/err"
+	"github.com/dilfish/tools/io"
 )
 
 // StateCount hold country name and ipv6 address count
@@ -89,7 +91,7 @@ func (ipv6c *IPv6Counter) count(line string) error {
 	arr := strings.Split(line, "/")
 	if len(arr) != 2 {
 		fmt.Println("bad format", arr)
-		return ErrBadFmt
+		return err.ErrBadFmt
 	}
 	mask, err := strconv.ParseUint(arr[1], 10, 32)
 	if err != nil {
@@ -107,7 +109,7 @@ func (ipv6c *IPv6Counter) getFiles() error {
 	for _, state := range ipv6c.stateList {
 		ipv6c.current = state
 		uri := base + state + "-ipv6.zone"
-		err := GetLine(uri, ipv6c.count)
+		err := io.GetLine(uri, ipv6c.count)
 		if err != nil {
 			return err
 		}

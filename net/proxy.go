@@ -2,7 +2,7 @@
 // tcp proxy
 // 2020
 
-package tools
+package net
 
 import (
 	"errors"
