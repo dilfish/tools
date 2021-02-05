@@ -1,6 +1,7 @@
 module github.com/dilfish/tools
 
 require (
+	github.com/dilfish/tools/err v1.0.8 // indirect
 	github.com/dilfish/tools/io v1.0.6 // indirect
 	github.com/go-redis/redis/v8 v8.4.8
 	github.com/go-sql-driver/mysql v1.4.1
