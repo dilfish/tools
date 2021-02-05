@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"testing"
 	"time"
+
+	"github.com/dilfish/tools/io"
 )
 
 func TestRequestToInfo(t *testing.T) {
@@ -80,7 +82,7 @@ func TestNewRequestLogger(t *testing.T) {
 
 func TestOpenReqLogDB(t *testing.T) {
 	var conf MgoConfig
-	err := ReadConfig("testdata/mongo.conf", &conf)
+	err := io.ReadConfig("testdata/mongo.conf", &conf)
 	if err != nil {
 		t.Error("no such mgo config", err)
 	}
@@ -99,7 +101,7 @@ func TestOpenReqLogDB(t *testing.T) {
 
 func TestRequestLogger(t *testing.T) {
 	var conf MgoConfig
-	err := ReadConfig("testdata/mongo.conf", &conf)
+	err := io.ReadConfig("testdata/mongo.conf", &conf)
 	if err != nil {
 		t.Error("read config error", err)
 	}

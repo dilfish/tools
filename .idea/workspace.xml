@@ -6,6 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="560e448e-0382-401b-9cfb-479650867051" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/db/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/db/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/sql_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/sql_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/err/error.go" beforeDir="false" afterPath="$PROJECT_DIR$/err/error.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logh/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/logh/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logh/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/logh/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logh/loghttp_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/logh/loghttp_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/net/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/net/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/net/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/net/go.sum" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

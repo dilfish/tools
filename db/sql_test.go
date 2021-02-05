@@ -4,11 +4,13 @@ package db
 
 import (
 	"testing"
+
+	"github.com/dilfish/tools/io"
 )
 
 func TestInitDB(t *testing.T) {
 	var conf DBConfig
-	err := ReadConfig("testdata/mysql.conf", &conf)
+	err := io.ReadConfig("testdata/mysql.conf", &conf)
 	if err != nil {
 		t.Error("read config error:", err)
 	}
@@ -17,7 +19,7 @@ func TestInitDB(t *testing.T) {
 		t.Error("db error", err)
 	}
 	defer db.Close()
-	err = ReadConfig("testdata/fake.mysql.conf", &conf)
+	err = io.ReadConfig("testdata/fake.mysql.conf", &conf)
 	if err != nil {
 		t.Error("read fake conf error:", err)
 	}
