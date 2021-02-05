@@ -1,3 +1,3 @@
-module github.com/dilfish/tools/error
+module github.com/dilfish/tools/err
 
 go 1.15
