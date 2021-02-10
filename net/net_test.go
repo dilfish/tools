@@ -60,3 +60,15 @@ func TestDIG(t *testing.T) {
 		t.Error("expect err but we got nil")
 	}
 }
+
+func TestIsIPv6(t *testing.T) {
+	if IsIPv6("abc") == true {
+		t.Error("abc is ipv6")
+	}
+	if IsIPv6("1.1.1.1") == true {
+		t.Error("1.1.1.1 is ipv6")
+	}
+	if IsIPv6("1::1") == false {
+		t.Error("1::1 is not ipv6")
+	}
+}

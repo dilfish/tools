@@ -105,3 +105,14 @@ func IPv62Num(ipstr string) (uint64, uint64) {
 	}
 	return inet, iint
 }
+
+func IsIPv6(ip string) bool {
+	goodIP := net.ParseIP(ip)
+	if goodIP == nil {
+		return false
+	}
+	if goodIP.To4() == nil {
+		return true
+	}
+	return false
+}
