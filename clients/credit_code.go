@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -69,7 +68,7 @@ func Go(name string) error {
 		return err
 	}
 	defer resp.Body.Close()
-	bt, err := ioutil.ReadAll(resp.Body)
+	bt, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}

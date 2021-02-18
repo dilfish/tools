@@ -10,7 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"math/rand"
 	"net/http"
 	"net/url"
@@ -114,7 +114,7 @@ func (ali *AliyunClient) ModifyRecord(subDomain, domain, value, recordId string)
 		return err
 	}
 	defer resp.Body.Close()
-	bt, err := ioutil.ReadAll(resp.Body)
+	bt, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}

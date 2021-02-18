@@ -3,7 +3,7 @@
 package logh
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 )
@@ -42,5 +42,5 @@ func (c *Cli) Get(u string) ([]byte, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	return ioutil.ReadAll(resp.Body)
+	return io.ReadAll(resp.Body)
 }

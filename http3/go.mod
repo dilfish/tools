@@ -1,6 +1,6 @@
 module github.com/dilfish/tools/http3
 
-go 1.15
+go 1.16
 
 require (
 	github.com/lucas-clemente/quic-go v0.19.3

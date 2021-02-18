@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -90,7 +90,7 @@ func DoJsonPost(uri string, args, ret interface{}) error {
 		return err
 	}
 	defer resp.Body.Close()
-	bt, err = ioutil.ReadAll(resp.Body)
+	bt, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}

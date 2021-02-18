@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 )
@@ -95,7 +95,7 @@ func sendPost(u string, v *url.Values, ret interface{}) error {
 		return err
 	}
 	defer resp.Body.Close()
-	bt, err := ioutil.ReadAll(resp.Body)
+	bt, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}

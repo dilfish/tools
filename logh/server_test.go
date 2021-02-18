@@ -3,7 +3,7 @@
 package logh
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -18,7 +18,7 @@ func TestEngine(t *testing.T) {
 		t.Error("http get error", err)
 	}
 	defer resp.Body.Close()
-	bt, err := ioutil.ReadAll(resp.Body)
+	bt, err := io.ReadAll(resp.Body)
 	if err != nil {
 		t.Error("read all error:", err)
 	}

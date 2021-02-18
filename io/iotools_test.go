@@ -4,7 +4,7 @@ package io
 
 import (
 	"errors"
-	"io/ioutil"
+	"io"
 	"os"
 	"testing"
 )
@@ -105,7 +105,7 @@ func dfsCb(name string) error {
 		return err
 	}
 	defer file.Close()
-	bt, err := ioutil.ReadAll(file)
+	bt, err := io.ReadAll(file)
 	if err != nil {
 		return err
 	}

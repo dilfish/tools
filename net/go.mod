@@ -1,6 +1,6 @@
 module github.com/dilfish/tools/net
 
-go 1.15
+go 1.16
 
 require (
 	github.com/dilfish/tools/err v1.0.8

@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
@@ -70,7 +69,7 @@ func ReadFile(fn string) ([]byte, error) {
 		return nil, err
 	}
 	defer file.Close()
-	return ioutil.ReadAll(file)
+	return io.ReadAll(file)
 }
 
 // LineFunc read a file into lines
@@ -162,7 +161,7 @@ func FileMd5(fn string) (int, string, error) {
 		return 0, "", err
 	}
 	defer file.Close()
-	bt, err := ioutil.ReadAll(file)
+	bt, err := io.ReadAll(file)
 	if err != nil {
 		return 0, "", err
 	}

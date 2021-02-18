@@ -1,6 +1,6 @@
 module github.com/dilfish/tools/logh
 
-go 1.15
+go 1.16
 
 require (
 	github.com/dilfish/tools/io v1.0.6
