@@ -9,7 +9,7 @@ const BlockHTML = `
 <!DOCTYPE html>
 <html>
 <head>
-<title>Wechat browser is blocked by ooxx team!</title>
+<title>微信被ooxx团队屏蔽!</title>
 <style>
     body {
         width: 35em;
@@ -20,6 +20,7 @@ const BlockHTML = `
 </head>
 <body>
 <h1>Wechat browser is blocked by ooxx team !</h1>
+<h1>Please use desktop or mobile browsers instead</1>
 <h1>不支持微信内部访问，请使用 Chrome/Firefox/Safari/Edge/cURL/NetCat</h1>
 <h1>强者可以不了解弱者，但是弱者必须了解强者才能保护自己 -- <我们无处安放的青春></h1>
 <p><em>Thank you for visiting OOXX.DEV.</em></p>
