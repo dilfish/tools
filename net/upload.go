@@ -67,7 +67,7 @@ func (u *UploaderService) Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	u.Curr = u.Curr + n
-	io.WriteString(w, "<html><h1>上传成功！，你可以访问这里看一看:<a href=\""+u.BaseURL+name+"\">File</a></h1></html>")
+	io.WriteString(w, "<html lang=\"zh-cmn-Hans\"><h1>上传成功！，你可以访问这里看一看:<a href=\""+u.BaseURL+name+"\">File</a></h1></html>")
 	return
 }
 
