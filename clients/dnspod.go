@@ -5,7 +5,7 @@ package clients
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
+	"log"
 	"io"
 	"net/http"
 	"net/url"
@@ -54,7 +54,7 @@ func dNSPodRecordModify(token, domain, sub, rid, nip string) error {
 		return err
 	}
 	if dpr.Status.Code != "1" {
-		fmt.Println("status code is", dpr)
+		log.Println("status code is", dpr)
 		return ErrBadStatus
 	}
 	return nil
@@ -82,7 +82,7 @@ func dNSPodRecordList(token, domain, sub string) (string, error) {
 		return "", err
 	}
 	if dpr.Status.Code != "1" {
-		fmt.Println(dpr.Status.Code)
+		log.Println(dpr.Status.Code)
 		return "", ErrBadStatus
 	}
 	return dpr.Records[0].Id, nil
