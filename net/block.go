@@ -35,8 +35,13 @@ func CheckBlocked(r *http.Request) bool {
 		return true
 	}
 	tc = r.Header["User-Agent"]
-	if len(tc) == 1 && strings.Index(tc[0], "MicroMessenger") >= 0 {
-		return true
-	}
+	if len(tc) == 1 {
+        if strings.Index(tc[0], "MicroMessenger") >= 0 {
+		    return true
+	    }
+        if tc[0] == "wx" {
+            return true
+        }
+    }
 	return false
 }
