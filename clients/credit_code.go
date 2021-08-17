@@ -13,7 +13,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/dilfish/tools"
+	dio "github.com/dilfish/tools/io"
 )
 
 var resultFile *os.File
@@ -98,7 +98,7 @@ func readFile(line string) error {
 
 // ReadInput read files
 func ReadInput() error {
-	return tools.ReadLine("./list.txt", readFile)
+	return dio.ReadLine("./list.txt", readFile)
 }
 
 // GetCreditCode get code in a file
