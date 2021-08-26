@@ -20,6 +20,15 @@ func RandEmoji() rune {
 
 func init() {
     for _, e := range EmojiListLit {
+        if e == ' ' {
+            continue
+        }
+        if e == '\n' {
+            continue
+        }
+        if e == '\r' {
+            continue
+        }
         emojiList = append(emojiList, e)
     }
 }
