@@ -5,6 +5,7 @@ package io
 
 import (
     "math/rand"
+    "log"
 )
 
 const EmojiListLit = `
@@ -13,8 +14,11 @@ const EmojiListLit = `
 
 var emojiList []rune
 
-func RandEmoji() rune {
+func RandEmoji(debug bool) rune {
     idx := rand.Int31n(int32(len(emojiList)))
+    if debug {
+        log.Println("emoji list:", len(emojiList), ", index:", idx)
+    }
     return emojiList[idx]
 }
 
@@ -27,6 +31,14 @@ func init() {
             continue
         }
         if e == '\r' {
+            continue
+        }
+        // zero width jointer
+        if e == 8205 {
+            continue
+        }
+        // variation selector
+        if e == 65039 || e == 65038 {
             continue
         }
         emojiList = append(emojiList, e)
