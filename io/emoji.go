@@ -43,4 +43,12 @@ func init() {
         }
         emojiList = append(emojiList, e)
     }
+    uniqMap := make(map[rune]bool)
+    for _, e := range emojiList {
+        uniqMap[e] = true
+    }
+    emojiList = nil
+    for k, _ := range uniqMap {
+        emojiList = append(emojiList, k)
+    }
 }
