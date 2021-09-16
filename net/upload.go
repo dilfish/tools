@@ -16,6 +16,7 @@ type UploaderService struct {
 	Curr     int64
 	BasePath string
 	BaseURL  string
+	NameLen  int
 }
 
 // WriteFile write reader into file
@@ -24,7 +25,7 @@ func (u *UploaderService) WriteFile(name string, rc io.Reader) (int64, string, e
 	if ext == "" {
 		ext = ".noext"
 	}
-	name = dio.RandStr(10) + ext
+	name = dio.RandStr(u.NameLen) + ext
 	fn := u.BasePath + "/" + name
 	file, err := os.Create(fn)
 	if err != nil {
@@ -71,11 +72,15 @@ func (u *UploaderService) Handler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func NewUploadService(baseURL, basePath string, maxSize, maxMem int64) *UploaderService {
+func NewUploadService(baseURL, basePath string, maxSize, maxMem int64, nameLen int) *UploaderService {
 	var u UploaderService
 	u.MaxSize = maxSize
 	u.MaxMem = maxMem
 	u.BasePath = basePath
 	u.BaseURL = baseURL
+	u.NameLen = nameLen
+	if u.NameLen < 1 {
+		u.NameLen = 10
+	}
 	return &u
 }
