@@ -9,7 +9,7 @@ const BlockHTML = `
 <!DOCTYPE html>
 <html>
 <head>
-<title>微信被DILFISH团队屏蔽!</title>
+<title> 🍒 微信被 DILFISH 团队屏蔽! 🍒</title>
 <style>
     body {
         width: 35em;
@@ -19,13 +19,14 @@ const BlockHTML = `
 </style>
 </head>
 <body>
-<h1>Wechat browser is blocked by x.dilfish.icu team !</h1>
+<h1>Wechat browser is blocked by dilfish.icu. team !</h1>
 <h1>Please use desktop or mobile browsers instead</1>
-<h1>不支持微信内部访问，请使用 Chrome, Firefox, Safari, Edge, Opera</h1>
-<h1>或者 cURL/NetCat </h1>
-<h1>强者可以不了解弱者，但是弱者必须了解强者才能保护自己 -- <我们无处安放的青春></h1>
-<p><em>Thank you for visiting x.dilfish.icu.</em></p>
-<p><em>Powered by x.dilfish.icu proactive blocking system®©</em></p>
+<h1>不支持微信内部访问，请使用 🐑浏览器 🐑访问，例如 Chrome, Firefox, Safari, Edge, Opera</h1>
+<h1>或者 cURL/NetCat 🐞 </h1>
+<h1>强者可以不了解弱者，但是弱者必须了解强者才能保护自己 -- <我们无处 🌹安放的青春></h1>
+<h1>♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦♦</h1>
+<p><em>Thank you for visiting dilfish.icu.</em></p>
+<p><em> 🐉Powered by dilfish.icu. proactive blocking system®© 🐉</em></p>
 </body>
 </html>
 `
