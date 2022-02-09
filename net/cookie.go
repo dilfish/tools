@@ -5,18 +5,38 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 )
 
 type CookieManager struct {
-	CookiePass string
+	CookiePass      string
+	ExpireIntervalS int64
 }
 
-func NewCookieManager(pass string) *CookieManager {
+func NewCookieManager(pass, prefix string, exp int64) *CookieManager {
 	var c CookieManager
 	c.CookiePass = pass
+	if exp < 60 {
+		exp = 60
+	}
+	c.ExpireIntervalS = exp
 	return &c
 }
+
+func SplitTimestamp(cookie string) int64 {
+	arr := strings.Split(cookie, "-")
+	if len(arr) != 2 {
+		return -1
+	}
+	num, err := strconv.ParseInt(arr[0], 10, 64)
+	if err != nil {
+		return -2
+	}
+	return num
+}
+
 func (cm *CookieManager) CheckCookie(r *http.Request, key, cookieKey string) string {
 	c, err := r.Cookie(key)
 	if err != nil {
@@ -25,7 +45,11 @@ func (cm *CookieManager) CheckCookie(r *http.Request, key, cookieKey string) str
 		}
 		return ""
 	}
-	should := cm.calcCookie(cm.CookiePass, cookieKey)
+	ts := SplitTimestamp(c.Value)
+	if ts <= 0 || ts < time.Now().Unix() {
+		return ""
+	}
+	should := cm.calcCookie(cm.CookiePass, cookieKey, ts)
 	if should != c.Value {
 		log.Println("cookie should be", should, "but we got", c.Value)
 		return ""
@@ -37,8 +61,8 @@ func (cm *CookieManager) SetCookie(w http.ResponseWriter, key, cookieKey string)
 	var c http.Cookie
 	c.Name = key
 	c.Path = "/"
-	c.Expires = time.Now().Add(time.Hour * 24)
-	c.Value = cm.calcCookie(cm.CookiePass, cookieKey)
+	c.Expires = time.Now().Add(time.Second * time.Duration(cm.ExpireIntervalS))
+	c.Value = cm.calcCookie(cm.CookiePass, cookieKey, time.Now().Unix() + cm.ExpireIntervalS)
 	http.SetCookie(w, &c)
 }
 
@@ -51,7 +75,8 @@ func (cm *CookieManager) ClrCookie(w http.ResponseWriter, key string) {
 	http.SetCookie(w, &c)
 }
 
-func (cm *CookieManager) calcCookie(val, cookieKey string) string {
-	bt := sha512.Sum512([]byte(cookieKey + val))
-	return fmt.Sprintf("%x", bt)
+func (cm *CookieManager) calcCookie(val, cookieKey string, unix int64) string {
+	ts := strconv.FormatInt(unix, 10)
+	bt := sha512.Sum512([]byte(cookieKey + val + ts))
+	return ts + "-" + fmt.Sprintf("%x", bt)
 }
