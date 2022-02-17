@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"sync"
+	"time"
 
 	dio "github.com/dilfish/tools/io"
 )
@@ -17,6 +19,9 @@ type UploaderService struct {
 	BasePath string
 	BaseURL  string
 	NameLen  int
+	Expire   time.Duration
+	Lock     sync.Mutex
+	Map      map[string]time.Time
 }
 
 // WriteFile write reader into file
@@ -33,6 +38,9 @@ func (u *UploaderService) WriteFile(name string, rc io.Reader) (int64, string, e
 		return 0, "", err
 	}
 	defer file.Close()
+	u.Lock.Lock()
+	defer u.Lock.Unlock()
+	u.Map[fn] = time.Now().Add(u.Expire)
 	n, err := io.Copy(file, rc)
 	return n, name, err
 }
@@ -72,15 +80,39 @@ func (u *UploaderService) Handler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func NewUploadService(baseURL, basePath string, maxSize, maxMem int64, nameLen int) *UploaderService {
+func NewUploadService(baseURL, basePath string, maxSize int64, expire time.Duration, nameLen int) *UploaderService {
 	var u UploaderService
 	u.MaxSize = maxSize
-	u.MaxMem = maxMem
+	u.MaxMem = maxSize
 	u.BasePath = basePath
 	u.BaseURL = baseURL
 	u.NameLen = nameLen
+	if expire < time.Minute {
+		expire = time.Minute
+	}
+	u.Expire = expire
 	if u.NameLen < 1 {
 		u.NameLen = 10
 	}
+	u.Map = make(map[string]time.Time)
+	go u.Patrol()
 	return &u
+}
+
+func (u *UploaderService) Patrol() {
+	for {
+		time.Sleep(time.Minute)
+		tbd := []string{}
+		u.Lock.Lock()
+		for k, v := range u.Map {
+			if v.After(time.Now()) {
+				tbd = append(tbd, k)
+			}
+		}
+		for _, tb := range tbd {
+			os.Remove(tb)
+			delete(u.Map, tb)
+		}
+		u.Lock.Unlock()
+	}
 }
