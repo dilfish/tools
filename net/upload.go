@@ -13,15 +13,16 @@ import (
 )
 
 type UploaderService struct {
-	MaxSize  int64
-	MaxMem   int64
-	Curr     int64
-	BasePath string
-	BaseURL  string
-	NameLen  int
-	Expire   time.Duration
-	Lock     sync.Mutex
-	Map      map[string]time.Time
+	MaxSize     int64
+	MaxMem      int64
+	Curr        int64
+	BasePath    string
+	BaseURL     string
+	JumpBackURL string
+	NameLen     int
+	Expire      time.Duration
+	Lock        sync.Mutex
+	Map         map[string]time.Time
 }
 
 // WriteFile write reader into file
@@ -76,16 +77,22 @@ func (u *UploaderService) Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	u.Curr = u.Curr + n
-	io.WriteString(w, "<html lang=\"zh-cmn-Hans\"><head><meta charset=\"UTF-8\"></head><h1>上传成功！，你可以访问这里看一看:<a href=\""+u.BaseURL+name+"\">File</a></h1></html>")
+	show := "<html lang=\"zh-cmn-Hans\"><head><meta charset=\"UTF-8\"></head><h1>上传成功！，你可以访问这里看一看:<a href=\"" + u.BaseURL + name + "\">File</a></h1>"
+	if u.JumpBackURL != "" {
+		show = show + "<h1><a href=\"" + u.JumpBackURL + "\">JumpBack</a></h1>"
+	}
+	show = show + "</html>"
+	io.WriteString(w, show)
 	return
 }
 
-func NewUploadService(baseURL, basePath string, maxSize int64, expire time.Duration, nameLen int) *UploaderService {
+func NewUploadService(baseURL, basePath, jump string, maxSize int64, expire time.Duration, nameLen int) *UploaderService {
 	var u UploaderService
 	u.MaxSize = maxSize
 	u.MaxMem = maxSize
 	u.BasePath = basePath
 	u.BaseURL = baseURL
+	u.JumpBackURL = jump
 	u.NameLen = nameLen
 	if expire < time.Minute {
 		expire = time.Minute
