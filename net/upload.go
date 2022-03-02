@@ -79,7 +79,7 @@ func (u *UploaderService) Handler(w http.ResponseWriter, r *http.Request) {
 	u.Curr = u.Curr + n
 	show := "<html lang=\"zh-cmn-Hans\"><head><meta charset=\"UTF-8\"></head><h1>上传成功！，你可以访问这里看一看:<a href=\"" + u.BaseURL + name + "\">File</a></h1>"
 	if u.JumpBackURL != "" {
-		show = show + "<h1><a href=\"" + u.JumpBackURL + "\">JumpBack</a></h1>"
+		show = show + "<h1>或者你也可以再次返回<a href=\"" + u.JumpBackURL + "\">上传页面</a></h1>"
 	}
 	show = show + "</html>"
 	io.WriteString(w, show)
