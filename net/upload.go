@@ -42,6 +42,7 @@ func (u *UploaderService) WriteFile(name string, rc io.Reader) (int64, string, e
 	u.Lock.Lock()
 	defer u.Lock.Unlock()
 	u.Map[fn] = time.Now().Add(u.Expire)
+	log.Println("upload file:", fn, u.Map[fn])
 	n, err := io.Copy(file, rc)
 	return n, name, err
 }
@@ -98,6 +99,7 @@ func NewUploadService(baseURL, basePath, jump string, maxSize int64, expire time
 		expire = time.Minute
 	}
 	u.Expire = expire
+	log.Println("u.Expire is:", expire)
 	if u.NameLen < 1 {
 		u.NameLen = 10
 	}
@@ -116,10 +118,11 @@ func (u *UploaderService) Patrol() {
 				tbd = append(tbd, k)
 			}
 		}
+		u.Lock.Unlock()
 		for _, tb := range tbd {
 			os.Remove(tb)
+			log.Println("uploader service remove:", tb)
 			delete(u.Map, tb)
 		}
-		u.Lock.Unlock()
 	}
 }
