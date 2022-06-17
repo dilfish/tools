@@ -114,7 +114,7 @@ func (u *UploaderService) Patrol() {
 		tbd := []string{}
 		u.Lock.Lock()
 		for k, v := range u.Map {
-			if v.After(time.Now()) {
+			if v.Before(time.Now()) {
 				tbd = append(tbd, k)
 			}
 		}
