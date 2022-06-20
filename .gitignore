@@ -26,3 +26,5 @@ _testmain.go
 coverage.out
 log.log
 testdata/*
+
+.idea/
