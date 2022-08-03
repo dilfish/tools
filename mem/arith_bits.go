@@ -32,6 +32,17 @@ func (a *ArithBits) Test(i uint) bool {
 	return a.B.Test(i)
 }
 
+func (a *ArithBits) Bytes() []uint64 {
+	return a.B.Bytes()
+}
+
+func From(bt []uint64) *ArithBits {
+	b := bitset.From(bt)
+	return &ArithBits{
+		B: b,
+	}
+}
+
 func (a *ArithBits) Add(add uint64) {
 	b := a.B.Bytes()
 	var carry bool
@@ -100,4 +111,3 @@ func (a *ArithBits) Sub(sub uint64) error {
 	}
 	return nil
 }
-
