@@ -1,6 +1,6 @@
 module github.com/dilfish/tools/db
 
-go 1.17
+go 1.19
 
 require (
 	github.com/dilfish/tools/io v1.0.7

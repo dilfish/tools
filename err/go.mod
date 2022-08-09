@@ -1,3 +1,3 @@
 module github.com/dilfish/tools/err
 
-go 1.17
+go 1.19
