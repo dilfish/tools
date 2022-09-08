@@ -2,12 +2,13 @@ package io
 
 import (
 	"runtime/debug"
+	"time"
 )
 
 type VersionInfo struct {
 	GoVersion  string
 	VcsVersion string
-	BuildTime  string
+	VcsTime    time.Time
 }
 
 func Version() VersionInfo {
@@ -22,7 +23,8 @@ func Version() VersionInfo {
 			vi.VcsVersion = setting.Value
 		}
 		if setting.Key == "vcs.time" {
-			vi.BuildTime = setting.Value
+			vi.VcsTime, _ = time.Parse("2006-01-02T15:04:05Z", setting.Value)
+			vi.VcsTime = vi.VcsTime.Local()
 		}
 	}
 	return vi
