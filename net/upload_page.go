@@ -14,7 +14,7 @@ var head = `
 var middle = `</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://dilfish.icu/302/bootstrap.css" rel="stylesheet">
 
   </head>
   <body>
@@ -32,8 +32,14 @@ var tail = `" method="post" enctype="multipart/form-data">
       </div>
     </main>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js"></script>
+    <main role="main" class="container">
+        <div class="jumbotron">
+            <h1>累积上传最多1G，单次最大10M</h1>
+        </div>
+    </main>
+
+    <script src="https://dilfish.icu/302/jquery.js"></script>
+    <script src="https://dilfish.icu/302/bootstrap.js"></script>
   </body>
 </html>
 `
