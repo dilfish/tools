@@ -1,6 +1,7 @@
 package net
 
 import (
+	dio "github.com/dilfish/tools/io"
 	"golang.org/x/exp/slog"
 	"io"
 	"net/http"
@@ -8,8 +9,6 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
-
-	dio "github.com/dilfish/tools/io"
 )
 
 type UploaderService struct {
@@ -87,7 +86,7 @@ func (u *UploaderService) Handler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func NewUploadService(baseURL, basePath, jump string, maxSize int64, expire time.Duration, nameLen int) *UploaderService {
+func NewUploadService(xl *slog.Logger, baseURL, basePath, jump string, maxSize int64, expire time.Duration, nameLen int) *UploaderService {
 	var u UploaderService
 	u.MaxSize = maxSize
 	u.MaxMem = maxSize
@@ -99,7 +98,7 @@ func NewUploadService(baseURL, basePath, jump string, maxSize int64, expire time
 		expire = time.Minute
 	}
 	u.Expire = expire
-	slog.Info("u.Expire", "expire", expire)
+	xl.Info("u.Expire", "expire", expire)
 	if u.NameLen < 1 {
 		u.NameLen = 10
 	}
