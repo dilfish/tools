@@ -1,8 +1,8 @@
 package net
 
 import (
+	"golang.org/x/exp/slog"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -35,14 +35,14 @@ func (u *UploaderService) WriteFile(name string, rc io.Reader) (int64, string, e
 	fn := u.BasePath + "/" + name
 	file, err := os.Create(fn)
 	if err != nil {
-		log.Println("create file name error:", name, err)
+		slog.Error("create file name", err, "name", name)
 		return 0, "", err
 	}
 	defer file.Close()
 	u.Lock.Lock()
 	defer u.Lock.Unlock()
 	u.Map[fn] = time.Now().Add(u.Expire)
-	log.Println("upload file:", fn, u.Map[fn])
+	slog.Info("upload file", "file name", fn, "path", u.Map[fn])
 	n, err := io.Copy(file, rc)
 	return n, name, err
 }
@@ -66,14 +66,14 @@ func (u *UploaderService) Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if u.Curr+header.Size > u.MaxSize {
-		log.Println("too many write:", u.Curr, header.Size, u.MaxSize)
+		slog.Info("too many write", "curr", u.Curr, "size", header.Size, "max size", u.MaxSize)
 		io.WriteString(w, "Too many write")
 		return
 	}
 	defer file.Close()
 	n, name, err := u.WriteFile(header.Filename, file)
 	if err != nil {
-		log.Println("write file error:", err)
+		slog.Error("write file", err)
 		io.WriteString(w, "write file error"+err.Error())
 		return
 	}
@@ -99,7 +99,7 @@ func NewUploadService(baseURL, basePath, jump string, maxSize int64, expire time
 		expire = time.Minute
 	}
 	u.Expire = expire
-	log.Println("u.Expire is:", expire)
+	slog.Info("u.Expire", "expire", expire)
 	if u.NameLen < 1 {
 		u.NameLen = 10
 	}
@@ -121,7 +121,7 @@ func (u *UploaderService) Patrol() {
 		u.Lock.Unlock()
 		for _, tb := range tbd {
 			os.Remove(tb)
-			log.Println("uploader service remove:", tb)
+			slog.Info("uploader service remove", "file name", tb)
 			delete(u.Map, tb)
 		}
 	}

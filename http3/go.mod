@@ -1,6 +1,6 @@
 module github.com/dilfish/tools/http3
 
-go 1.19
+go 1.20
 
 require (
 	github.com/cheekybits/genny v1.0.0 // indirect

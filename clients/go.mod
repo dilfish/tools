@@ -1,6 +1,6 @@
 module github.com/dilfish/tools/clients
 
-go 1.19
+go 1.20
 
 require (
 	github.com/dilfish/tools/io v1.0.7
