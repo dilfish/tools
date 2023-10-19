@@ -35,6 +35,7 @@ var tail = `" method="post" enctype="multipart/form-data">
     <main role="main" class="container">
         <div class="jumbotron">
             <h1>累积上传最多1G，单次最大10M</h1>
+            <h1>curl -X POST -H "Content-Type: multipart/form-data" -F "file=@filename.fileext" https://dev.ug/upload</h1>
         </div>
     </main>
 
