@@ -14,7 +14,7 @@ var head = `
 var middle = `</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="https://cdn.dilfish.icu/302/bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.871116.xyz/302/bootstrap.css" rel="stylesheet">
 
   </head>
   <body>
@@ -39,8 +39,8 @@ var tail = `" method="post" enctype="multipart/form-data">
         </div>
     </main>
 
-    <script src="https://cdn.dilfish.icu/302/jquery.js"></script>
-    <script src="https://cdn.dilfish.icu/302/bootstrap.js"></script>
+    <script src="https://cdn.871116.xyz/302/jquery.js"></script>
+    <script src="https://cdn.871116.xyz/302/bootstrap.js"></script>
   </body>
 </html>
 `
