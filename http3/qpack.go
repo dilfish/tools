@@ -26,8 +26,8 @@ func DecodeQPack() error {
 	for _, hf := range hfs {
 		values[hf.Name] = hf.Value
 	}
-	req := `{"Accept":["text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"],"Accept-Encoding":["gzip, deflate, br"],"Accept-Language":["en-US,en;q=0.5"],"Alt-Used":["dev.ug"],"Cache-Control":["max-age=0"],"Upgrade-Insecure-Requests":["1"],"User-Agent":["Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:85.0) Gecko/20100101 Firefox/85.0"]}`
-	values["x-host"] = "dev.ug"
+	req := `{"Accept":["text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"],"Accept-Encoding":["gzip, deflate, br"],"Accept-Language":["en-US,en;q=0.5"],"Alt-Used":["871116.xyz"],"Cache-Control":["max-age=0"],"Upgrade-Insecure-Requests":["1"],"User-Agent":["Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:85.0) Gecko/20100101 Firefox/85.0"]}`
+	values["x-host"] = "871116.xyz"
 	values["x-req-header"] = req
 	log.Println("QPack Decoded Headers as:")
 	for k, v := range values {

@@ -14,7 +14,7 @@ var head = `
 var middle = `</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="https://san.dev.ug/bootstrap.css" rel="stylesheet">
+    <link href="https://871116.xyz/302/bootstrap.css" rel="stylesheet">
 
   </head>
   <body>
@@ -35,12 +35,12 @@ var tail = `" method="post" enctype="multipart/form-data">
     <main role="main" class="container">
         <div class="jumbotron">
             <h1>累积上传最多1G，单次最大10M</h1>
-            <h1>curl -X POST -H "Content-Type: multipart/form-data" -F "file=@filename.fileext" https://dev.ug/upload</h1>
+            <h1>curl -X POST -H "Content-Type: multipart/form-data" -F "file=@filename.fileext" https://871116.xyz/upload</h1>
         </div>
     </main>
 
-    <script src="https://san.dev.ug/jquery.js"></script>
-    <script src="https://san.dev.ug/bootstrap.js"></script>
+    <script src="https://871116.xyz/302/jquery.js"></script>
+    <script src="https://871116.xyz/302/bootstrap.js"></script>
   </body>
 </html>
 `
